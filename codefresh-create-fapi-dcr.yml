@@ -1,0 +1,43 @@
+version: "1.0"
+stages:
+  - "prepare"
+  - "dcr"
+
+steps:
+  sbat_main_clone:
+    type: git-clone
+    title: Git Clone SecureBankingAccessToolkit/conformance-dcr
+    repo: SecureBankingAccessToolkit/conformance-dcr
+    revision: "sbat-master"
+    stage: prepare
+    git: github-bot
+  prepare_environment_context:
+    title: "Preparing environment"
+    image: eu.gcr.io/sbat-gcr-develop/ci/gcloud-tools:latest
+    stage: prepare
+    commands:
+      - |
+        set -e      
+        config_json_template=$(cat conformance-dcr/sbat-create-dcr-config.json.jq.template)
+        
+        # --arg are treated as strings and get escaped and quoted
+        # --jsonargs are treated as valid json, we use this to supply the certs as they contain \n chars which we do not want escaping
+        jq -n \
+           --arg wellknown_endpoint "${WELLKNOWN_ENDPOINT}" \
+           --arg ssa "${SSA}" \
+           --arg issuer "${ISSUER}" \
+           --argjson signing_private_key "\"${FAPI_1_OB_SEAL_KEY}\"" \
+           --argjson transport_cert "\"${FAPI_1_OB_WAC_CERT}\"" \
+           --argjson transport_private_key "\"${FAPI_1_OB_WAC_KEY}\"" \
+           --arg token_endpoint_auth_method "${TOKEN_ENDPOINT_AUTH_METHOD}" \
+           "${config_json_template}" > dcr-config.json
+  create_dcr:
+    title: "Creating DCR"
+    image: eu.gcr.io/sbat-gcr-develop/securebanking/conformance-dcr:v1.3.0
+    stage: dcr
+    volumes:
+      - ./dcr-config.json:/config.json # host path is relative to /codefresh/volume
+    cmd:
+      - -config-path
+      - /config.json
+      - --debug
