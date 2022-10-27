@@ -37,7 +37,13 @@ steps:
     stage: dcr
     volumes:
       - ./dcr-config.json:/config.json # host path is relative to /codefresh/volume
-    cmd:
-      - -config-path
-      - /config.json
-      - --debug
+    commands:
+      - |
+        dcr -config-path /config.json --debug > dcr.log
+        # print the logs
+        cat dcr.log
+        
+        # extract the client_id that was created, the logs contain a line with the registration response json obj
+        client_id=$(cat dcr.log | grep "register res:" | grep -o "{.*}" | jq --raw-output .client_id)
+        echo "Created client_id: ${client_id}"
+        # TODO store the client_id somewhere.
