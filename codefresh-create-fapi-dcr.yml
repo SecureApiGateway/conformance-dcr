@@ -24,26 +24,40 @@ steps:
         # --jsonargs are treated as valid json, we use this to supply the certs as they contain \n chars which we do not want escaping
         jq -n \
            --arg wellknown_endpoint "${WELLKNOWN_ENDPOINT}" \
-           --arg ssa "${SSA}" \
-           --arg issuer "${ISSUER}" \
+           --arg ssa "${FAPI_1_SSA}" \
+           --arg issuer "${FAPI_1_ISSUER}" \
            --argjson signing_private_key "\"${FAPI_1_OB_SEAL_KEY}\"" \
            --argjson transport_cert "\"${FAPI_1_OB_WAC_CERT}\"" \
            --argjson transport_private_key "\"${FAPI_1_OB_WAC_KEY}\"" \
            --arg token_endpoint_auth_method "${TOKEN_ENDPOINT_AUTH_METHOD}" \
-           "${config_json_template}" > dcr-config.json
+           "${config_json_template}" > fapi-1-dcr-config.json
+        
+        jq -n \
+           --arg wellknown_endpoint "${WELLKNOWN_ENDPOINT}" \
+           --arg ssa "${FAPI_2_SSA}" \
+           --arg issuer "${FAPI_2_ISSUER}" \
+           --argjson signing_private_key "\"${FAPI_2_OB_SEAL_KEY}\"" \
+           --argjson transport_cert "\"${FAPI_2_OB_WAC_CERT}\"" \
+           --argjson transport_private_key "\"${FAPI_2_OB_WAC_KEY}\"" \
+           --arg token_endpoint_auth_method "${TOKEN_ENDPOINT_AUTH_METHOD}" \
+           "${config_json_template}" > fapi-2-dcr-config.json
+        
+
   create_dcr:
-    title: "Creating DCR"
+    title: "Creating DCRs"
     image: eu.gcr.io/sbat-gcr-develop/securebanking/conformance-dcr:v1.3.0
     stage: dcr
     volumes:
-      - ./dcr-config.json:/config.json # host path is relative to /codefresh/volume
+      - ./fapi-1-dcr-config.json:/fapi-1-dcr-config.json # host path is relative to /codefresh/volume
+      - ./fapi-2-dcr-config.json:/fapi-2-dcr-config.json
     commands:
       - |
-        dcr -config-path /config.json --debug > dcr.log
-        # print the logs
-        cat dcr.log
-        
+        dcr -config-path /fapi-1-dcr-config.json --debug > fapi-1.log
+        dcr -config-path /fapi-2-dcr-config.json --debug > fapi-2.log
+
         # extract the client_id that was created, the logs contain a line with the registration response json obj
-        client_id=$(cat dcr.log | grep "register res:" | grep -o "{.*}" | jq --raw-output .client_id)
-        echo "Created client_id: ${client_id}"
-        # TODO store the client_id somewhere.
+        fapi_1_client_id=$(cat fapi-1.log | grep "register res:" | grep -o "{.*}" | jq --raw-output .client_id)
+        echo "fapi-compliance-1 client_id: ${fapi_1_client_id}"
+
+        fapi_2_client_id=$(cat fapi-2.log | grep "register res:" | grep -o "{.*}" | jq --raw-output .client_id)
+        echo "fapi-compliance-2 client_id: ${fapi_2_client_id}"
