@@ -15,18 +15,19 @@ import (
 )
 
 type DCR32Config struct {
-	OpenIDConfig       openid.Configuration
-	SSA                string
-	KID                string
-	RedirectURIs       []string
-	TokenSigningMethod jwt.SigningMethod
-	PrivateKey         *rsa.PrivateKey
-	SecureClient       *http2.Client
-	GetImplemented     bool
-	PutImplemented     bool
-	DeleteImplemented  bool
-	AuthoriserBuilder  auth.AuthoriserBuilder
-	SchemaValidator    schema.Validator
+	OpenIDConfig             openid.Configuration
+	SSA                      string
+	KID                      string
+	RedirectURIs             []string
+	TokenSigningMethod       jwt.SigningMethod
+	PrivateKey               *rsa.PrivateKey
+	SecureClient             *http2.Client
+	GetImplemented           bool
+	PutImplemented           bool
+	DeleteImplemented        bool
+	AuthoriserBuilder        auth.AuthoriserBuilder
+	SchemaValidator          schema.Validator
+	CreateSoftwareClientOnly bool
 }
 
 func NewDCR32Config(
@@ -43,6 +44,8 @@ func NewDCR32Config(
 	deleteImplemented bool,
 	tlsSkipVerify bool,
 	specVersion string,
+	preferredTokenEndpointAuthMethod string,
+	createSoftwareClientOnly bool,
 ) (DCR32Config, error) {
 	privateKey, err := jwt.ParseRSAPrivateKeyFromPEM([]byte(signingKeyPEM))
 	if err != nil {
@@ -81,7 +84,8 @@ func NewDCR32Config(
 		WithPrivateKey(privateKey).
 		WithTokenEndpointAuthMethod(tokenSignMethod).
 		WithTransportCert(transportCert).
-		WithTransportCertSubjectDn(transportCertSubjectDn)
+		WithTransportCertSubjectDn(transportCertSubjectDn).
+		WithPreferredTokenEndpointAuthMethod(preferredTokenEndpointAuthMethod)
 
 	secureClient, err := http.NewBuilder().
 		WithRootCAs(transportRootCAs).
@@ -93,17 +97,18 @@ func NewDCR32Config(
 	}
 
 	return DCR32Config{
-		OpenIDConfig:      openIDConfig,
-		SSA:               ssa,
-		KID:               kid,
-		RedirectURIs:      redirectURIs,
-		PrivateKey:        privateKey,
-		SecureClient:      secureClient,
-		GetImplemented:    getImplemented,
-		PutImplemented:    putImplemented,
-		DeleteImplemented: deleteImplemented,
-		AuthoriserBuilder: authoriserBuilder,
-		SchemaValidator:   schemaValidator,
+		OpenIDConfig:             openIDConfig,
+		SSA:                      ssa,
+		KID:                      kid,
+		RedirectURIs:             redirectURIs,
+		PrivateKey:               privateKey,
+		SecureClient:             secureClient,
+		GetImplemented:           getImplemented,
+		PutImplemented:           putImplemented,
+		DeleteImplemented:        deleteImplemented,
+		AuthoriserBuilder:        authoriserBuilder,
+		SchemaValidator:          schemaValidator,
+		CreateSoftwareClientOnly: createSoftwareClientOnly,
 	}, nil
 }
 

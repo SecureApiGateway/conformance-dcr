@@ -25,10 +25,36 @@ func NewAuthoriser(
 	jwtExpiration time.Duration,
 	transportCert *x509.Certificate,
 	transportSubjectDn string,
+	preferredTokenEndpointAuthMethod string,
 ) Authoriser {
 	requestObjectSignAlg := "none"
 	if len(config.RequestObjectSignAlgSupported) > 0 {
 		requestObjectSignAlg = config.RequestObjectSignAlgSupported[0]
+	}
+
+	if preferredTokenEndpointAuthMethod != "" {
+		if sliceContains(preferredTokenEndpointAuthMethod, config.TokenEndpointAuthMethodsSupported) {
+			return NewClientPrivateKeyJwt(
+				config.TokenEndpoint,
+				tokenEndpointSignMethod,
+				privateKey,
+				NewJwtSigner(
+					tokenEndpointSignMethod,
+					ssa,
+					issuer,
+					aud,
+					kid,
+					preferredTokenEndpointAuthMethod,
+					requestObjectSignAlg,
+					redirectURIs,
+					responseTypes,
+					privateKey,
+					jwtExpiration,
+					transportCert,
+					transportSubjectDn,
+				),
+			)
+		}
 	}
 
 	if sliceContains("tls_client_auth", config.TokenEndpointAuthMethodsSupported) {

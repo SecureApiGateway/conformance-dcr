@@ -11,15 +11,16 @@ import (
 )
 
 type AuthoriserBuilder struct {
-	config                  openid.Configuration
-	ssa, aud, kID, issuer   string
-	tokenEndpointSignMethod jwt.SigningMethod
-	redirectURIs            []string
-	responseTypes           []string
-	privateKey              *rsa.PrivateKey
-	jwtExpiration           time.Duration
-	transportCert           *x509.Certificate
-	transportCertSubjectDn  string
+	config                           openid.Configuration
+	ssa, aud, kID, issuer            string
+	tokenEndpointSignMethod          jwt.SigningMethod
+	redirectURIs                     []string
+	responseTypes                    []string
+	privateKey                       *rsa.PrivateKey
+	jwtExpiration                    time.Duration
+	transportCert                    *x509.Certificate
+	transportCertSubjectDn           string
+	preferredTokenEndpointAuthMethod string
 }
 
 func NewAuthoriserBuilder() AuthoriserBuilder {
@@ -88,6 +89,11 @@ func (b AuthoriserBuilder) WithJwtExpiration(jwtExpiration time.Duration) Author
 	return b
 }
 
+func (b AuthoriserBuilder) WithPreferredTokenEndpointAuthMethod(tokenEndPointAuthMethod string) AuthoriserBuilder {
+	b.preferredTokenEndpointAuthMethod = tokenEndPointAuthMethod
+	return b
+}
+
 func (b AuthoriserBuilder) Build() (Authoriser, error) {
 	if b.ssa == "" {
 		return none{}, errors.New("missing ssa from authoriser")
@@ -114,5 +120,6 @@ func (b AuthoriserBuilder) Build() (Authoriser, error) {
 		b.jwtExpiration,
 		b.transportCert,
 		b.transportCertSubjectDn,
+		b.preferredTokenEndpointAuthMethod,
 	), nil
 }
