@@ -41,6 +41,11 @@ build_image: ## build the docker image. Use available args IMAGE_TAG=v1.x.y, ENA
 	@export DOCKER_CONTENT_TRUST=${ENABLE_IMAGE_SIGNING}
 	docker build ${DOCKER_BUILD_ARGS} -t "openbanking/conformance-dcr:${IMAGE_TAG}" .
 
+
+.PHONY: build_sbat_image
+build_sbat_image: ## build the docker image. Use available args IMAGE_TAG=v1.x.y
+	docker build --file Dockerfile-sbat ${DOCKER_BUILD_ARGS} -t "eu.gcr.io/sbat-gcr-develop/securebanking/conformance-dcr:${IMAGE_TAG}" .
+
 ##@ Dependencies:
 
 .PHONY: tools
