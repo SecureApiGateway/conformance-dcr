@@ -9,6 +9,9 @@ func IsSupportedSpecVersion(version string) bool {
 func NewSpecManifest(version string, cfg DCR32Config) (Manifest, error) {
 	switch version {
 	case "3.2":
+		if cfg.CreateSoftwareClientOnly {
+			return NewDCR32CreateSoftwareClientOnly(cfg)
+		}
 		return NewDCR32(cfg)
 	case "3.3":
 		return NewDCR33(cfg)

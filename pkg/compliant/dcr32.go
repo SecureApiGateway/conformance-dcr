@@ -41,6 +41,16 @@ func NewDCR32(cfg DCR32Config) (Manifest, error) {
 	return NewManifest("DCR32", "1.0", scenarios)
 }
 
+func NewDCR32CreateSoftwareClientOnly(cfg DCR32Config) (Manifest, error) {
+	secureClient := cfg.SecureClient
+	authoriserBuilder := cfg.AuthoriserBuilder
+	scenarios := Scenarios{
+		DCR32CreateSoftwareClient(cfg, secureClient, authoriserBuilder),
+	}
+
+	return NewManifest("DCR32", "1.0", scenarios)
+}
+
 func DCR32ValidateOIDCConfigRegistrationURL(cfg DCR32Config) Scenario {
 	return NewBuilder(
 		"DCR-001",

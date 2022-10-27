@@ -83,6 +83,8 @@ func runCmd(flags flags) {
 		cfg.DeleteImplemented,
 		flags.tlsSkipVerify,
 		cfg.SpecVersion,
+		cfg.PreferredTokenEndPointAuthMethod,
+		cfg.CreateSoftwareClientOnly,
 	)
 	exitOnError(err)
 
