@@ -18,3 +18,7 @@ This needs to be supplied as `--argjson` to jq to prevent jq escaping the \n cha
 `$redirect_uris_str` variable is expected to be supplied as a comma separated list of uri strings
 
 Example: `"https://www.google.co.uk,https://www.certification.openid.net/test/a/forgerock-sbat-dev/callback&scope=openid%20accounts&response_type=code%20id_token"`
+
+## sbat-conformance-config.jq
+
+This template is used by the pipeline that runs the full DCR conformance test suite.
