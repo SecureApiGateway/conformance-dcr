@@ -18,7 +18,7 @@ steps:
     commands:
       - |
         set -e      
-        config_json_template=$(cat conformance-dcr/sbat-create-dcr-config.json.jq.template)
+        config_json_template=$(cat conformance-dcr/templates/sbat-create-dcr-config.jq)
         
         # --arg are treated as strings and get escaped and quoted
         # --jsonargs are treated as valid json, we use this to supply the certs as they contain \n chars which we do not want escaping
@@ -26,6 +26,7 @@ steps:
            --arg wellknown_endpoint "${WELLKNOWN_ENDPOINT}" \
            --arg ssa "${FAPI_1_SSA}" \
            --arg issuer "${FAPI_1_ISSUER}" \
+           --arg redirect_uris_str "${REDIRECT_URIS}" \
            --argjson signing_private_key "\"${FAPI_1_OB_SEAL_KEY}\"" \
            --argjson transport_cert "\"${FAPI_1_OB_WAC_CERT}\"" \
            --argjson transport_private_key "\"${FAPI_1_OB_WAC_KEY}\"" \
@@ -36,6 +37,7 @@ steps:
            --arg wellknown_endpoint "${WELLKNOWN_ENDPOINT}" \
            --arg ssa "${FAPI_2_SSA}" \
            --arg issuer "${FAPI_2_ISSUER}" \
+           --arg redirect_uris_str "${REDIRECT_URIS}" \
            --argjson signing_private_key "\"${FAPI_2_OB_SEAL_KEY}\"" \
            --argjson transport_cert "\"${FAPI_2_OB_WAC_CERT}\"" \
            --argjson transport_private_key "\"${FAPI_2_OB_WAC_KEY}\"" \
