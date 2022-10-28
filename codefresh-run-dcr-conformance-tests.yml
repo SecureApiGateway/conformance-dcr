@@ -33,7 +33,7 @@ steps:
            --arg token_endpoint_auth_method "${TOKEN_ENDPOINT_AUTH_METHOD}" \
            "${config_json_template}" > dcr-config.json
   create_dcr:
-    title: "Creating DCRs"
+    title: "Run DCR compliance tests"
     image: eu.gcr.io/sbat-gcr-develop/securebanking/conformance-dcr:v1.3.0
     stage: dcr
     volumes:
