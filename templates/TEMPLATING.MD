@@ -22,3 +22,8 @@ Example: `"https://www.google.co.uk,https://www.certification.openid.net/test/a/
 ## sbat-conformance-config.jq
 
 This template is used by the pipeline that runs the full DCR conformance test suite.
+See [codefresh-run-dcr-conformance-tests.yml](../codefresh-run-dcr-conformance-tests.yml) to see how the template is used.
+
+The template is very similar to the previous template (above variable documentation applies), the difference is that
+we disable `create_software_client_only` configuration to run the whole suite and mark that get/put/delete operations
+are implemented.
