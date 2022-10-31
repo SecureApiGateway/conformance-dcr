@@ -54,8 +54,20 @@ steps:
       - ./fapi-2-dcr-config.json:/fapi-2-dcr-config.json
     commands:
       - |
-        dcr -config-path /fapi-1-dcr-config.json --debug > fapi-1.log
-        dcr -config-path /fapi-2-dcr-config.json --debug > fapi-2.log
+        echo "Running against env: ${WELLKNOWN_ENDPOINT}"
+               
+        if ! dcr -config-path /fapi-1-dcr-config.json --debug > fapi-1.log; then
+          echo "Failed to do dcr for fapi-1-dcr-config.json, dumping dcr logs and exiting..."
+          cat fapi-1.log
+          exit 1
+        fi
+        
+        if ! dcr -config-path /fapi-2-dcr-config.json --debug > fapi-2.log; then
+          echo "Failed to do dcr for fapi-2-dcr-config.json, dumping dcr logs and exiting..."
+          cat fapi-2.log
+          exit 1
+        fi
+        echo "Successfully registered clients"
 
         # extract the client_id that was created, the logs contain a line with the registration response json obj
         fapi_1_client_id=$(cat fapi-1.log | grep "register res:" | grep -o "{.*}" | jq --raw-output .client_id)
