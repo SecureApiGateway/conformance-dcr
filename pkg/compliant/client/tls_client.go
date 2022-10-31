@@ -8,19 +8,25 @@ import (
 )
 
 type tlsClient struct {
-	id            string
-	tokenEndpoint string
+	id                      string
+	registrationAccessToken string
+	tokenEndpoint           string
 }
 
-func NewTlsClientAuth(id, tokenEndpoint string) Client {
+func NewTlsClientAuth(id, registrationAccessToken, tokenEndpoint string) Client {
 	return tlsClient{
-		id:            id,
-		tokenEndpoint: tokenEndpoint,
+		id:                      id,
+		registrationAccessToken: registrationAccessToken,
+		tokenEndpoint:           tokenEndpoint,
 	}
 }
 
 func (c tlsClient) Id() string {
 	return c.id
+}
+
+func (c tlsClient) RegistrationAccessToken() string {
+	return c.registrationAccessToken
 }
 
 func (c tlsClient) CredentialsGrantRequest() (*http.Request, error) {

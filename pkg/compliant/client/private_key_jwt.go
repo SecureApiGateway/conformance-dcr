@@ -12,27 +12,33 @@ import (
 )
 
 type privateKeyJwt struct {
-	id               string
-	tokenEndpoint    string
-	privateKey       *rsa.PrivateKey
-	signingAlgorithm jwt.SigningMethod
+	id                      string
+	registrationAccessToken string
+	tokenEndpoint           string
+	privateKey              *rsa.PrivateKey
+	signingAlgorithm        jwt.SigningMethod
 }
 
 func NewPrivateKeyJwt(
-	id, tokenEndpoint string,
+	id, registrationAccessToken, tokenEndpoint string,
 	privateKey *rsa.PrivateKey,
 	signingAlgorithm jwt.SigningMethod,
 ) Client {
 	return privateKeyJwt{
-		id:               id,
-		tokenEndpoint:    tokenEndpoint,
-		privateKey:       privateKey,
-		signingAlgorithm: signingAlgorithm,
+		id:                      id,
+		registrationAccessToken: registrationAccessToken,
+		tokenEndpoint:           tokenEndpoint,
+		privateKey:              privateKey,
+		signingAlgorithm:        signingAlgorithm,
 	}
 }
 
 func (c privateKeyJwt) Id() string {
 	return c.id
+}
+
+func (c privateKeyJwt) RegistrationAccessToken() string {
+	return c.registrationAccessToken
 }
 
 func (c privateKeyJwt) CredentialsGrantRequest() (*http.Request, error) {

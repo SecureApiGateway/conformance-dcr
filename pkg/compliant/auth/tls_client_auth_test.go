@@ -9,11 +9,12 @@ import (
 func TestNewTlsClientAuth(t *testing.T) {
 	a := NewTlsClientAuth("/token", mockedSigner{})
 
-	data := []byte(`{"client_id": "12345"}`)
+	data := []byte(`{"client_id": "12345", "registration_access_token": "abcdef"}`)
 	client, err := a.Client(data)
 
 	require.NoError(t, err)
 	assert.Equal(t, "12345", client.Id())
+	assert.Equal(t, "abcdef", client.RegistrationAccessToken())
 }
 
 func TestNewTlsClientAuth_ClientHandlerMarshalError(t *testing.T) {

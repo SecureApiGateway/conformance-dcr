@@ -14,11 +14,12 @@ import (
 func TestPrivateKeyJwt(t *testing.T) {
 	key, err := rsa.GenerateKey(rand.Reader, 2048)
 	assert.NoError(t, err)
-	client := NewPrivateKeyJwt("id", "token", key, jwt.SigningMethodPS256)
+	client := NewPrivateKeyJwt("id", "regAccessToken", "token", key, jwt.SigningMethodPS256)
 
 	request, err := client.CredentialsGrantRequest()
 	require.NoError(t, err)
 	assert.Equal(t, "id", client.Id())
+	assert.Equal(t, "regAccessToken", client.RegistrationAccessToken())
 	bodyByes, err := ioutil.ReadAll(request.Body)
 	require.NoError(t, err)
 	bodyDecoded, err := url.ParseQuery(string(bodyByes))

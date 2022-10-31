@@ -28,6 +28,7 @@ func (c tlsClientAuth) Client(response []byte) (client.Client, error) {
 
 	return client.NewTlsClientAuth(
 		registrationResponse.ClientID,
+		registrationResponse.RegistrationAccessToken,
 		c.tokenEndpoint,
 	), nil
 }

@@ -62,11 +62,12 @@ func TestClientSecretBasicAuther_Client_ReturnsAClient(t *testing.T) {
 		),
 	)
 
-	client, err := auther.Client([]byte(`{"client_id": "12345", "client_secret": "54321"}`))
+	client, err := auther.Client([]byte(`{"client_id": "12345", "registration_access_token": "abcdef", "client_secret": "54321"}`))
 	require.NoError(t, err)
 	r, err := client.CredentialsGrantRequest()
 	require.NoError(t, err)
 	assert.Equal(t, "12345", client.Id())
+	assert.Equal(t, "abcdef", client.RegistrationAccessToken())
 
 	expectedTokenHeader := fmt.Sprintf("Basic %s", base64.StdEncoding.EncodeToString([]byte("12345:54321")))
 	assert.Equal(t, expectedTokenHeader, r.Header.Get("Authorization"))
