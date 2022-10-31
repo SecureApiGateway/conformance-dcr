@@ -35,9 +35,20 @@ func (s clientRetrieveResponse) Run(ctx Context) Result {
 		return NewFailResult(s.stepName, "decoding response: "+err.Error())
 	}
 
+	existingClient, err := ctx.GetClient(s.clientCtxKey)
+	if err != nil {
+		return NewFailResult(s.stepName, "failed to get client for key: "+s.responseCtxKey+" from context")
+	}
+
+	// Preserve the registrationAccessToken for future use, the retrieve response will not return it
+	var registrationAccessToken = ""
+	if existingClient != nil && existingClient.RegistrationAccessToken() != "" {
+		registrationAccessToken = existingClient.RegistrationAccessToken()
+	}
+
 	ctx.SetClient(s.clientCtxKey, client.NewClientSecretBasic(
 		registrationResponse.ClientID,
-		registrationResponse.RegistrationAccessToken,
+		registrationAccessToken,
 		registrationResponse.ClientSecret,
 		s.tokenEndpoint,
 	))
