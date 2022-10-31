@@ -1,6 +1,7 @@
 package step
 
 import (
+	dcr "bitbucket.org/openbankingteam/conformance-dcr/pkg/compliant/client"
 	http2 "bitbucket.org/openbankingteam/conformance-dcr/pkg/http"
 	"fmt"
 	"net/http"
@@ -38,12 +39,10 @@ func (s clientDelete) Run(ctx Context) Result {
 		return NewFailResult(s.stepName, fmt.Sprintf("unable to create request %s: %v", url, err))
 	}
 
-	grantToken, err := ctx.GetGrantToken(s.grantTokenCtxKey)
+	err = dcr.AddRegistrationAccessTokenAuthHeader(req, client)
 	if err != nil {
-		msg := fmt.Sprintf("unable to find client grant token %s in context: %v", s.grantTokenCtxKey, err)
-		return NewFailResult(s.stepName, msg)
+		return NewFailResult(s.stepName, fmt.Sprintf("unable to create request %s: %v", url, err))
 	}
-	req.Header.Set("Authorization", "Bearer "+grantToken.AccessToken)
 
 	debug.Log(http2.DebugRequest(req))
 

@@ -28,6 +28,7 @@ func (c clientSecretJWT) Client(response []byte) (client.Client, error) {
 
 	return client.NewClientSecretJwt(
 		registrationResponse.ClientID,
+		registrationResponse.RegistrationAccessToken,
 		registrationResponse.ClientSecret,
 		c.tokenEndpoint,
 	), nil

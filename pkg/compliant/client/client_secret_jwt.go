@@ -11,21 +11,27 @@ import (
 )
 
 type clientSecretJwt struct {
-	id            string
-	tokenEndpoint string
-	clientSecret  string
+	id                      string
+	registrationAccessToken string
+	tokenEndpoint           string
+	clientSecret            string
 }
 
-func NewClientSecretJwt(id, clientSecret, tokenEndpoint string) Client {
+func NewClientSecretJwt(id, registrationAccessToken, clientSecret, tokenEndpoint string) Client {
 	return clientSecretJwt{
-		id:            id,
-		tokenEndpoint: tokenEndpoint,
-		clientSecret:  clientSecret,
+		id:                      id,
+		registrationAccessToken: registrationAccessToken,
+		tokenEndpoint:           tokenEndpoint,
+		clientSecret:            clientSecret,
 	}
 }
 
 func (c clientSecretJwt) Id() string {
 	return c.id
+}
+
+func (c clientSecretJwt) RegistrationAccessToken() string {
+	return c.registrationAccessToken
 }
 
 func (c clientSecretJwt) CredentialsGrantRequest() (*http.Request, error) {

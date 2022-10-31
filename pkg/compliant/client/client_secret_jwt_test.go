@@ -9,11 +9,12 @@ import (
 )
 
 func TestClientSecretJWT(t *testing.T) {
-	client := NewClientSecretJwt("id", "secret", "/token_endpoint")
+	client := NewClientSecretJwt("id", "regAccessToken", "secret", "/token_endpoint")
 
 	request, err := client.CredentialsGrantRequest()
 	require.NoError(t, err)
 	assert.Equal(t, "id", client.Id())
+	assert.Equal(t, "regAccessToken", client.RegistrationAccessToken())
 
 	bodyByes, err := ioutil.ReadAll(request.Body)
 	require.NoError(t, err)

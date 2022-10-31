@@ -9,11 +9,12 @@ import (
 )
 
 func TestClientTlsClientAuth(t *testing.T) {
-	client := NewTlsClientAuth("id", "token")
+	client := NewTlsClientAuth("id", "regAccessToken", "token")
 
 	request, err := client.CredentialsGrantRequest()
 	require.NoError(t, err)
 	assert.Equal(t, "id", client.Id())
+	assert.Equal(t, "regAccessToken", client.RegistrationAccessToken())
 	bodyByes, err := ioutil.ReadAll(request.Body)
 	require.NoError(t, err)
 	bodyDecoded, err := url.ParseQuery(string(bodyByes))

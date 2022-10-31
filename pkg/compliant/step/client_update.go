@@ -1,7 +1,7 @@
 package step
 
 import (
-	"bitbucket.org/openbankingteam/conformance-dcr/pkg/compliant/auth"
+	dcr "bitbucket.org/openbankingteam/conformance-dcr/pkg/compliant/client"
 	http2 "bitbucket.org/openbankingteam/conformance-dcr/pkg/http"
 	"bytes"
 	"fmt"
@@ -53,14 +53,8 @@ func (s clientUpdate) Run(ctx Context) Result {
 		return NewFailResultWithDebug(s.stepName, msg, s.debug)
 	}
 
-	grantToken, err := ctx.GetGrantToken(s.grantTokenCtxKey)
-	if err != nil {
-		msg := fmt.Sprintf("unable to find client grant token %s in context: %v", s.grantTokenCtxKey, err)
-		return NewFailResultWithDebug(s.stepName, msg, s.debug)
-	}
-
 	endpoint := fmt.Sprintf("%s/%s", s.registrationEndpoint, client.Id())
-	response, err := s.doJwtPutRequest(endpoint, jwtClaims, grantToken)
+	response, err := s.doJwtPutRequest(client, endpoint, jwtClaims)
 	if err != nil {
 		return s.failResult(err.Error())
 	}
@@ -71,16 +65,18 @@ func (s clientUpdate) Run(ctx Context) Result {
 	return NewPassResultWithDebug(s.stepName, s.debug)
 }
 
-func (s clientUpdate) doJwtPutRequest(endpoint, jwtClaims string, grantToken auth.GrantToken) (*http.Response, error) {
+func (s clientUpdate) doJwtPutRequest(client dcr.Client, endpoint, jwtClaims string) (*http.Response, error) {
 	body := bytes.NewBufferString(jwtClaims)
 	req, err := http.NewRequest(http.MethodPut, endpoint, body)
 	if err != nil {
 		return nil, errors.Wrap(err, "creating jose put request")
 	}
+	err = dcr.AddRegistrationAccessTokenAuthHeader(req, client)
+	if err != nil {
+		return nil, errors.Wrap(err, "Unable to add AccessToken to request")
+	}
 	req.Header.Add("Content-Type", "application/jose")
 	req.Header.Add("Accept", "application/json")
-
-	req.Header.Set("Authorization", "Bearer "+grantToken.AccessToken)
 
 	s.debug.Log(http2.DebugRequest(req))
 

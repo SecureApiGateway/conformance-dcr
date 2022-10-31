@@ -28,14 +28,16 @@ func (c clientSecretBasic) Client(response []byte) (client.Client, error) {
 
 	return client.NewClientSecretBasic(
 		registrationResponse.ClientID,
+		registrationResponse.RegistrationAccessToken,
 		registrationResponse.ClientSecret,
 		c.tokenEndpoint,
 	), nil
 }
 
 type OBClientRegistrationResponse struct {
-	ClientID     string `json:"client_id"`
-	ClientSecret string `json:"client_secret,omitempty"`
+	ClientID                string `json:"client_id"`
+	RegistrationAccessToken string `json:"registration_access_token"`
+	ClientSecret            string `json:"client_secret,omitempty"`
 }
 
 func (c clientSecretBasic) Claims() (string, error) {

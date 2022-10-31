@@ -37,6 +37,7 @@ func (s clientRetrieveResponse) Run(ctx Context) Result {
 
 	ctx.SetClient(s.clientCtxKey, client.NewClientSecretBasic(
 		registrationResponse.ClientID,
+		registrationResponse.RegistrationAccessToken,
 		registrationResponse.ClientSecret,
 		s.tokenEndpoint,
 	))

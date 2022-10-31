@@ -11,13 +11,14 @@ import (
 )
 
 func TestClientBasic(t *testing.T) {
-	client := NewClientSecretBasic("id", "secret", "http://endpoint")
+	client := NewClientSecretBasic("id", "regAccessToken", "secret", "http://endpoint")
 
 	expectedTokenHeader := fmt.Sprintf("Basic %s", base64.StdEncoding.EncodeToString([]byte("id:secret")))
 
 	request, err := client.CredentialsGrantRequest()
 	require.NoError(t, err)
 	assert.Equal(t, "id", client.Id())
+	assert.Equal(t, "regAccessToken", client.RegistrationAccessToken())
 	assert.Equal(t, expectedTokenHeader, request.Header.Get("Authorization"))
 
 	bodyByes, err := ioutil.ReadAll(request.Body)

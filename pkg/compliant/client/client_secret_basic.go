@@ -10,21 +10,27 @@ import (
 )
 
 type clientSecretBasic struct {
-	id            string
-	secret        string
-	tokenEndpoint string
+	id                      string
+	registrationAccessToken string
+	secret                  string
+	tokenEndpoint           string
 }
 
-func NewClientSecretBasic(id, secret, tokenEndpoint string) Client {
+func NewClientSecretBasic(id, registrationAccessToken, secret, tokenEndpoint string) Client {
 	return clientSecretBasic{
-		id:            id,
-		secret:        secret,
-		tokenEndpoint: tokenEndpoint,
+		id:                      id,
+		registrationAccessToken: registrationAccessToken,
+		secret:                  secret,
+		tokenEndpoint:           tokenEndpoint,
 	}
 }
 
 func (c clientSecretBasic) Id() string {
 	return c.id
+}
+
+func (c clientSecretBasic) RegistrationAccessToken() string {
+	return c.registrationAccessToken
 }
 
 func (c clientSecretBasic) CredentialsGrantRequest() (*http.Request, error) {

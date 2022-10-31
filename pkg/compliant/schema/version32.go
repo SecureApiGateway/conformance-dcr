@@ -26,7 +26,7 @@ func (v responseValidator32) Validate(data io.Reader) []Failure {
 		),
 		"client_secret": validation.Validate(
 			registrationResponse.ClientSecret,
-			validation.Length(1, 36),
+			validation.Length(1, 256),
 		),
 		"redirect_uris": validation.Validate(
 			registrationResponse.RedirectURIs,

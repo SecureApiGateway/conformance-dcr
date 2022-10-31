@@ -39,6 +39,7 @@ func (c clientPrivateKeyJwt) Client(response []byte) (client.Client, error) {
 
 	return client.NewPrivateKeyJwt(
 		registrationResponse.ClientID,
+		registrationResponse.RegistrationAccessToken,
 		c.tokenEndpoint,
 		c.privateKey,
 		c.signingAlgorithm,
