@@ -13,8 +13,9 @@ import (
 )
 
 const (
-	clientID     = "foo"
-	clientSecret = "bar"
+	clientID                = "foo"
+	clientSecret            = "bar"
+	registrationAccessToken = "accessToken123"
 )
 
 func TestNewClientDelete(t *testing.T) {
@@ -26,7 +27,7 @@ func TestNewClientDelete(t *testing.T) {
 	}))
 	defer server.Close()
 
-	softClient := client.NewClientSecretBasic(clientID, server.URL, clientSecret)
+	softClient := client.NewClientSecretBasic(clientID, registrationAccessToken, server.URL, clientSecret)
 	ctx := NewContext()
 	ctx.SetClient("clientKey", softClient)
 	ctx.SetGrantToken("clientGrantKey", auth.GrantToken{})
@@ -48,7 +49,7 @@ func TestNewClientDelete_Expects204(t *testing.T) {
 	}))
 	defer server.Close()
 
-	softClient := client.NewClientSecretBasic(clientID, server.URL, clientSecret)
+	softClient := client.NewClientSecretBasic(clientID, registrationAccessToken, server.URL, clientSecret)
 	ctx := NewContext()
 	ctx.SetClient("clientKey", softClient)
 	ctx.SetGrantToken("clientGrantKey", auth.GrantToken{})
@@ -61,11 +62,11 @@ func TestNewClientDelete_Expects204(t *testing.T) {
 }
 
 func TestNewClientDelete_HandlesCreateRequestError(t *testing.T) {
-	softClient := client.NewClientSecretBasic(clientID, "", clientSecret)
+	softClient := client.NewClientSecretBasic(clientID, registrationAccessToken, clientSecret, "")
 	ctx := NewContext()
 	ctx.SetClient("clientKey", softClient)
 	ctx.SetGrantToken("clientGrantKey", auth.GrantToken{})
-	step := NewClientDelete(string(0x7f), "clientKey", "clientGrantKey", &http.Client{})
+	step := NewClientDelete("", "clientKey", "clientGrantKey", &http.Client{})
 
 	result := step.Run(ctx)
 
@@ -78,7 +79,7 @@ func TestNewClientDelete_HandlesCreateRequestError(t *testing.T) {
 }
 
 func TestNewClientDelete_HandlesExecuteRequestError(t *testing.T) {
-	softClient := client.NewClientSecretBasic(clientID, "", clientSecret)
+	softClient := client.NewClientSecretBasic(clientID, registrationAccessToken, clientSecret, "")
 	ctx := NewContext()
 	ctx.SetClient("clientKey", softClient)
 	ctx.SetGrantToken("clientGrantKey", auth.GrantToken{})
@@ -110,7 +111,7 @@ func TestNewClientDelete_HandlesErrorForClientNotFound(t *testing.T) {
 }
 
 func TestNewClientDelete_HandlesErrorForGrantNotFound(t *testing.T) {
-	softClient := client.NewClientSecretBasic(clientID, "", clientSecret)
+	softClient := client.NewClientSecretBasic(clientID, "", clientSecret, "")
 	ctx := NewContext()
 	ctx.SetClient("clientKey", softClient)
 	step := NewClientDelete("localhost", "clientKey", "clientGrantKey", &http.Client{})

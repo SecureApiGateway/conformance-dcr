@@ -5,21 +5,43 @@ import (
 )
 
 type claims struct {
-	stepName          string
-	jwtClaimsCtxKey   string
-	authoriserBuilder auth.AuthoriserBuilder
+	stepName           string
+	jwtClaimsCtxKey    string
+	clientCtxKey       string
+	authoriserBuilder  auth.AuthoriserBuilder
+	updateRegistration bool
 }
 
-func NewClaims(jwtClaimsCtxKey string, authoriserBuilder auth.AuthoriserBuilder) Step {
+func NewClaims(jwtClaimsCtxKey string, clientCtxKey string, authoriserBuilder auth.AuthoriserBuilder) Step {
 	return claims{
-		stepName:          "Generate signed software client claims",
-		jwtClaimsCtxKey:   jwtClaimsCtxKey,
-		authoriserBuilder: authoriserBuilder,
+		stepName:           "Generate signed software client claims",
+		jwtClaimsCtxKey:    jwtClaimsCtxKey,
+		clientCtxKey:       clientCtxKey,
+		authoriserBuilder:  authoriserBuilder,
+		updateRegistration: false,
+	}
+}
+
+func NewClaimsForRegistrationUpdate(jwtClaimsCtxKey string, clientCtxKey string, authoriserBuilder auth.AuthoriserBuilder) Step {
+	return claims{
+		stepName:           "Generate signed software client claims",
+		jwtClaimsCtxKey:    jwtClaimsCtxKey,
+		clientCtxKey:       clientCtxKey,
+		authoriserBuilder:  authoriserBuilder,
+		updateRegistration: true,
 	}
 }
 
 func (c claims) Run(ctx Context) Result {
 	debug := NewDebug()
+
+	if c.updateRegistration {
+		client, err := ctx.GetClient(c.clientCtxKey)
+		if err != nil {
+			return NewFailResultWithDebug(c.stepName, "Failed to get existing client in order to use client_id for update", debug)
+		}
+		c.authoriserBuilder = c.authoriserBuilder.WithClientId(client.Id())
+	}
 
 	debug.Log("getting claims from authoriser")
 	authoriser, err := c.authoriserBuilder.Build()

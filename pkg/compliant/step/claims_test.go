@@ -24,7 +24,7 @@ func TestClaims_Run(t *testing.T) {
 		WithTokenEndpointAuthMethod(jwt.SigningMethodPS256).
 		WithOpenIDConfig(config).
 		WithJwtExpiration(time.Hour)
-	step := NewClaims("jwtClaimsCtxKey", authoriserBuilder)
+	step := NewClaims("jwtClaimsCtxKey", "clientCtxKey", authoriserBuilder)
 
 	result := step.Run(ctx)
 
@@ -47,7 +47,7 @@ func TestClaims_Run_FailsOnClaimsError(t *testing.T) {
 		WithTokenEndpointAuthMethod(jwt.SigningMethodPS256).
 		WithOpenIDConfig(config).
 		WithJwtExpiration(time.Hour)
-	step := NewClaims("jwtClaimsCtxKey", authoriserBuilder)
+	step := NewClaims("jwtClaimsCtxKey", "clientCtxKey", authoriserBuilder)
 
 	result := step.Run(ctx)
 

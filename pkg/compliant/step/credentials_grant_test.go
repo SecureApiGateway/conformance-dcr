@@ -19,7 +19,7 @@ func TestClientCredentialsGrant(t *testing.T) {
 	}))
 	defer server.Close()
 
-	softClient := client.NewClientSecretBasic(clientID, clientSecret, server.URL)
+	softClient := client.NewClientSecretBasic(clientID, registrationAccessToken, clientSecret, server.URL)
 	ctx := NewContext()
 	ctx.SetClient("clientKey", softClient)
 	ctx.SetGrantToken("clientGrantKey", auth.GrantToken{})

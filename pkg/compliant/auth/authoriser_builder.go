@@ -21,6 +21,7 @@ type AuthoriserBuilder struct {
 	transportCert                    *x509.Certificate
 	transportCertSubjectDn           string
 	preferredTokenEndpointAuthMethod string
+	clientId                         string
 }
 
 func NewAuthoriserBuilder() AuthoriserBuilder {
@@ -94,6 +95,11 @@ func (b AuthoriserBuilder) WithPreferredTokenEndpointAuthMethod(tokenEndPointAut
 	return b
 }
 
+func (b AuthoriserBuilder) WithClientId(clientId string) AuthoriserBuilder {
+	b.clientId = clientId
+	return b
+}
+
 func (b AuthoriserBuilder) Build() (Authoriser, error) {
 	if b.ssa == "" {
 		return none{}, errors.New("missing ssa from authoriser")
@@ -121,5 +127,6 @@ func (b AuthoriserBuilder) Build() (Authoriser, error) {
 		b.transportCert,
 		b.transportCertSubjectDn,
 		b.preferredTokenEndpointAuthMethod,
+		b.clientId,
 	), nil
 }

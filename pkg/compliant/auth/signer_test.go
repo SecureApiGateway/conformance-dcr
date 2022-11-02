@@ -30,6 +30,7 @@ func TestNewJwtSigner(t *testing.T) {
 		time.Hour,
 		&x509.Certificate{},
 		"",
+		"",
 	)
 
 	signedClaims, err := signer.Claims()
@@ -80,6 +81,7 @@ func TestNewJwtSigner_TlsClientAuthAddSubjectToClaims(t *testing.T) {
 		time.Hour,
 		&x509.Certificate{Subject: pkix.Name{Organization: []string{"OB"}}},
 		"",
+		"",
 	)
 
 	token, claims := getJwtClaims(t, signer, privateKey)
@@ -117,6 +119,7 @@ func TestNewJwtSigner_TlsClientAuthAddConfigurableSubjectToClaims(t *testing.T) 
 		time.Hour,
 		&x509.Certificate{Subject: pkix.Name{Organization: []string{"OB"}}},
 		"CN=Configured Subject DN",
+		"",
 	)
 
 	_, claims := getJwtClaims(t, signer, privateKey)
@@ -158,6 +161,7 @@ func TestNewJwtSigner_TlsClientAuthDoesNotPanicOnMissingCert(t *testing.T) {
 		time.Hour,
 		nil,
 		"",
+		"",
 	)
 
 	_, err = signer.Claims()
@@ -184,6 +188,7 @@ func TestNewJwtSigner_OmitsEmptyResponseTypes(t *testing.T) {
 		privateKey,
 		time.Hour,
 		&x509.Certificate{Subject: pkix.Name{Organization: []string{"OB"}}},
+		"",
 		"",
 	)
 	_, claims := getJwtClaims(t, signer, privateKey)
