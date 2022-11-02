@@ -26,6 +26,7 @@ func NewAuthoriser(
 	transportCert *x509.Certificate,
 	transportSubjectDn string,
 	preferredTokenEndpointAuthMethod string,
+	clientId string,
 ) Authoriser {
 	requestObjectSignAlg := "none"
 	if len(config.RequestObjectSignAlgSupported) > 0 {
@@ -52,6 +53,7 @@ func NewAuthoriser(
 					jwtExpiration,
 					transportCert,
 					transportSubjectDn,
+					clientId,
 				),
 			)
 		}
@@ -74,6 +76,7 @@ func NewAuthoriser(
 				jwtExpiration,
 				transportCert,
 				transportSubjectDn,
+				clientId,
 			),
 		)
 	}
@@ -96,6 +99,7 @@ func NewAuthoriser(
 				jwtExpiration,
 				transportCert,
 				transportSubjectDn,
+				clientId,
 			),
 		)
 	}
@@ -116,6 +120,7 @@ func NewAuthoriser(
 				jwtExpiration,
 				transportCert,
 				transportSubjectDn,
+				clientId,
 			),
 		)
 	}
@@ -136,6 +141,7 @@ func NewAuthoriser(
 				jwtExpiration,
 				transportCert,
 				transportSubjectDn,
+				clientId,
 			),
 		)
 	}

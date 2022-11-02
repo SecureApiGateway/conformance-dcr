@@ -100,7 +100,13 @@ func (t *testCaseBuilder) AssertContextTypeApplicationHtml() *testCaseBuilder {
 }
 
 func (t *testCaseBuilder) GenerateSignedClaims(authoriserBuilder auth.AuthoriserBuilder) *testCaseBuilder {
-	nextStep := step.NewClaims(jwtClaimsCtxKey, authoriserBuilder)
+	nextStep := step.NewClaims(jwtClaimsCtxKey, clientCtxKey, authoriserBuilder)
+	t.steps = append(t.steps, nextStep)
+	return t
+}
+
+func (t *testCaseBuilder) GenerateSignedClaimsForRegistrationUpdate(authoriserBuilder auth.AuthoriserBuilder) *testCaseBuilder {
+	nextStep := step.NewClaimsForRegistrationUpdate(jwtClaimsCtxKey, clientCtxKey, authoriserBuilder)
 	t.steps = append(t.steps, nextStep)
 	return t
 }

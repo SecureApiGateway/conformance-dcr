@@ -57,7 +57,7 @@ func TestNewClientRegister_HandlesHttpErrors(t *testing.T) {
 func TestNewClientRegister_HandlesCreateRequestError(t *testing.T) {
 	ctx := NewContext()
 	ctx.SetString("jwtClaimsCtxKey", "jwt.Claims.xxxx")
-	step := NewPostClientRegister(string(0x7f), "jwtClaimsCtxKey", "responseCtxKey", &http.Client{})
+	step := NewPostClientRegister("", "jwtClaimsCtxKey", "responseCtxKey", &http.Client{})
 
 	result := step.Run(ctx)
 
@@ -71,7 +71,7 @@ func TestNewClientRegister_HandlesCreateRequestError(t *testing.T) {
 
 func TestNewClientRegister_HandlesJwtClaimsNotInContext(t *testing.T) {
 	ctx := NewContext()
-	registrationEndpoint := string(0x7f)
+	registrationEndpoint := ""
 	ctx.SetOpenIdConfig("openIdConfigCtxKey", openid.Configuration{
 		RegistrationEndpoint: &registrationEndpoint,
 		TokenEndpoint:        "",

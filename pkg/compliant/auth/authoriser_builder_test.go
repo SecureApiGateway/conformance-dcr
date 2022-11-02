@@ -60,5 +60,6 @@ func Test_AuthoriserBuilder_Success(t *testing.T) {
 		cert,
 		"",
 		"",
+		"",
 	), authoriser)
 }

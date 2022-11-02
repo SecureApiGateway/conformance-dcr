@@ -28,6 +28,7 @@ type jwtSigner struct {
 	jwtExpiration           time.Duration
 	transportCert           *x509.Certificate
 	transportSubjectDn      string
+	clientId                string
 }
 
 func NewJwtSigner(
@@ -44,6 +45,7 @@ func NewJwtSigner(
 	jwtExpiration time.Duration,
 	transportCert *x509.Certificate,
 	transportSubjectDn string,
+	clientId string,
 ) Signer {
 	return jwtSigner{
 		signingAlgorithm:        signingAlgorithm,
@@ -59,9 +61,9 @@ func NewJwtSigner(
 		jwtExpiration:           jwtExpiration,
 		transportCert:           transportCert,
 		transportSubjectDn:      transportSubjectDn,
+		clientId:                clientId,
 	}
 }
-
 func (s jwtSigner) Claims() (string, error) {
 	id, err := uuid.NewRandom()
 	if err != nil {
@@ -102,6 +104,11 @@ func (s jwtSigner) Claims() (string, error) {
 		"scope":                        "accounts openid",
 		"request_object_signing_alg":   s.requestObjectSignAlg,
 		"id_token_signed_response_alg": s.signingAlgorithm.Alg(),
+	}
+
+	// client_id is optional for new registrations and required to update existing registrations
+	if s.clientId != "" {
+		claims["client_id"] = s.clientId
 	}
 
 	if s.responseTypes != nil {

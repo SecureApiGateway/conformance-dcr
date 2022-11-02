@@ -311,9 +311,10 @@ func DCR32UpdateSoftwareClient(
 		TestCase(
 			NewTestCaseBuilder("Update an existing software client").
 				WithHttpClient(secureClient).
-				GenerateSignedClaims(authoriserBuilder).
+				GenerateSignedClaimsForRegistrationUpdate(authoriserBuilder).
 				ClientUpdate(cfg.OpenIDConfig.RegistrationEndpointAsString()).
 				AssertStatusCodeOk().
+				ParseClientRegisterResponse(authoriserBuilder).
 				Build(),
 		).
 		TestCase(DCR32DeleteSoftwareClientTestCase(cfg, secureClient)).

@@ -24,7 +24,7 @@ func TestNewClientRetrieve(t *testing.T) {
 	defer server.Close()
 
 	ctx := NewContext()
-	ctx.SetClient("clientKey", client.NewClientSecretBasic(clientID, server.URL, clientSecret))
+	ctx.SetClient("clientKey", client.NewClientSecretBasic(clientID, "", server.URL, clientSecret))
 	ctx.SetGrantToken("grantTokenKey", auth.GrantToken{})
 	step := NewClientRetrieve("responseCtxKey", server.URL, "clientKey", "grantTokenKey", server.Client())
 
@@ -41,9 +41,9 @@ func TestNewClientRetrieve(t *testing.T) {
 
 func TestNewClientRegister_HandlesMakeRequestError(t *testing.T) {
 	ctx := NewContext()
-	ctx.SetClient("clientKey", client.NewClientSecretBasic(clientID, "", clientSecret))
+	ctx.SetClient("clientKey", client.NewClientSecretBasic(clientID, "", "", clientSecret))
 	ctx.SetGrantToken("grantTokenKey", auth.GrantToken{})
-	step := NewClientRetrieve("responseCtxKey", string(0x7f), "clientKey", "grantTokenKey", &http.Client{})
+	step := NewClientRetrieve("responseCtxKey", "", "clientKey", "grantTokenKey", &http.Client{})
 
 	result := step.Run(ctx)
 
@@ -57,7 +57,7 @@ func TestNewClientRegister_HandlesMakeRequestError(t *testing.T) {
 
 func TestNewClientRegister_HandlesExecuteRequestError(t *testing.T) {
 	ctx := NewContext()
-	ctx.SetClient("clientKey", client.NewClientSecretBasic(clientID, "", clientSecret))
+	ctx.SetClient("clientKey", client.NewClientSecretBasic(clientID, "", "", clientSecret))
 	ctx.SetGrantToken("grantTokenKey", auth.GrantToken{})
 	step := NewClientRetrieve("responseCtxKey", "localhost", "clientKey", "grantTokenKey", &http.Client{})
 
@@ -73,7 +73,7 @@ func TestNewClientRegister_HandlesExecuteRequestError(t *testing.T) {
 
 func TestNewClientRegister_HandlesErrorForClientNotFound(t *testing.T) {
 	ctx := NewContext()
-	registrationEndpoint := string(0x7f)
+	registrationEndpoint := ""
 	ctx.SetOpenIdConfig("openIdConfigCtxKey", openid.Configuration{
 		RegistrationEndpoint: &registrationEndpoint,
 		TokenEndpoint:        "",
@@ -92,7 +92,7 @@ func TestNewClientRegister_HandlesErrorForClientNotFound(t *testing.T) {
 
 func TestNewClientRegister_HandlesErrorForGrantTokenNotFound(t *testing.T) {
 	ctx := NewContext()
-	ctx.SetClient("clientKey", client.NewClientSecretBasic(clientID, "", clientSecret))
+	ctx.SetClient("clientKey", client.NewClientSecretBasic(clientID, "", "", clientSecret))
 	step := NewClientRetrieve("responseCtxKey", "localhost", "clientKey", "grantTokenKey", &http.Client{})
 
 	result := step.Run(ctx)
