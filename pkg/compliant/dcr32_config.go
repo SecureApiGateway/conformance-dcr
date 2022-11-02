@@ -67,7 +67,7 @@ func NewDCR32Config(
 		return DCR32Config{}, errors.Wrap(err, "creating DCR32 config")
 	}
 
-	responseTypes, err := responseTypeResolve(openIDConfig.ResponseTypesSupported)
+	responseTypes, err := responseTypeResolveSbat(openIDConfig.ResponseTypesSupported)
 	if err != nil {
 		return DCR32Config{}, errors.Wrap(err, "creating DCR32 config")
 	}
