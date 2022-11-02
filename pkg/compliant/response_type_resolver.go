@@ -28,3 +28,10 @@ func responseTypeResolve(types *[]string) ([]string, error) {
 
 	return responseTypes, nil
 }
+
+// SBAT currently only supports "code id_token"
+func responseTypeResolveSbat(types *[]string) ([]string, error) {
+	var responseTypes []string
+	responseTypes = append(responseTypes, "code id_token")
+	return responseTypes, nil
+}
