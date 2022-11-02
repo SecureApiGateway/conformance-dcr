@@ -10,9 +10,9 @@ import (
 	"strings"
 	"time"
 
-	"bitbucket.org/openbankingteam/conformance-dcr/pkg/compliant"
-	"bitbucket.org/openbankingteam/conformance-dcr/pkg/compliant/openid"
-	ver "bitbucket.org/openbankingteam/conformance-dcr/pkg/version"
+	"github.com/OpenBankingUK/conformance-dcr/pkg/compliant"
+	"github.com/OpenBankingUK/conformance-dcr/pkg/compliant/openid"
+	ver "github.com/OpenBankingUK/conformance-dcr/pkg/version"
 	"github.com/dgrijalva/jwt-go"
 )
 
@@ -191,7 +191,7 @@ func exitOnError(err error) {
 // getUpdateMessage checks if there is an update available to the current software. An appropriate message is returned
 // in both cases of either update being available or not.
 func getUpdateMessage(v VersionInfo, bitbucketTagsEndpoint string) string {
-	vc := ver.NewBitBucket(bitbucketTagsEndpoint)
+	vc := ver.NewGitHub(bitbucketTagsEndpoint)
 	update, err := vc.UpdateAvailable(v.version)
 	if err != nil {
 		return fmt.Sprintf("error checking for updates: %s", err.Error())
@@ -201,7 +201,7 @@ func getUpdateMessage(v VersionInfo, bitbucketTagsEndpoint string) string {
 		updMsg := fmt.Sprintf("Version %s of the this tool is out of date. Please consider updating.\n", v.version)
 		sb.WriteString(updMsg)
 		sb.WriteString("Please see the following URL more information:\n")
-		sb.WriteString("https://bitbucket.org/openbankingteam/conformance-dcr/src/develop/README.md")
+		sb.WriteString("https://github.com/OpenBankingUK/conformance-dcr/src/develop/README.md")
 		return sb.String()
 	}
 

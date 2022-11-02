@@ -1,10 +1,10 @@
 package step
 
 import (
-	dcr "bitbucket.org/openbankingteam/conformance-dcr/pkg/compliant/client"
-	http2 "bitbucket.org/openbankingteam/conformance-dcr/pkg/http"
 	"bytes"
 	"fmt"
+	dcr "github.com/OpenBankingUK/conformance-dcr/pkg/compliant/client"
+	http2 "github.com/OpenBankingUK/conformance-dcr/pkg/http"
 	"github.com/pkg/errors"
 	"net/http"
 )
