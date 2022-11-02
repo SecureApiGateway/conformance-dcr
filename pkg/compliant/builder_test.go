@@ -53,10 +53,9 @@ func TestNewTestCaseBuilder(t *testing.T) {
 		ClientDelete(sampleEndpoint).
 		ParseClientRetrieveResponse(sampleEndpoint).
 		AssertValidSchemaResponse(validator).
-		SetInvalidGrantToken().
 		ValidateRegistrationEndpoint(someUrl).
 		GetClientCredentialsGrant(sampleEndpoint)
 
 	assert.Equal(t, "test case", tc.name)
-	assert.Len(t, tc.steps, 16)
+	assert.Len(t, tc.steps, 15)
 }

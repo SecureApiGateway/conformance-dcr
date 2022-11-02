@@ -34,6 +34,10 @@ func AddRegistrationAccessTokenAuthHeader(req *http.Request, client Client) erro
 	if client.RegistrationAccessToken() == "" {
 		return errors.New("client has no RegistrationAccessToken")
 	}
-	req.Header.Set("Authorization", "Bearer "+client.RegistrationAccessToken())
+	AddAuthorizationBearerToken(req, client.RegistrationAccessToken())
 	return nil
+}
+
+func AddAuthorizationBearerToken(req *http.Request, accessToken string) {
+	req.Header.Set("Authorization", "Bearer "+accessToken)
 }
