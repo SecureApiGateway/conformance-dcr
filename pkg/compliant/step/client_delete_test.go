@@ -108,19 +108,3 @@ func TestNewClientDelete_HandlesErrorForClientNotFound(t *testing.T) {
 		result.FailReason,
 	)
 }
-
-func TestNewClientDelete_HandlesErrorForGrantNotFound(t *testing.T) {
-	softClient := client.NewClientSecretBasic(clientID, "", clientSecret, "")
-	ctx := NewContext()
-	ctx.SetClient("clientKey", softClient)
-	step := NewClientDelete("localhost", "clientKey", "clientGrantKey", &http.Client{})
-
-	result := step.Run(ctx)
-
-	assert.False(t, result.Pass)
-	assert.Equal(
-		t,
-		"unable to find client grant token clientGrantKey in context: key not found in context",
-		result.FailReason,
-	)
-}

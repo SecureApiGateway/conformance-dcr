@@ -24,7 +24,7 @@ func TestNewClientRetrieve(t *testing.T) {
 	defer server.Close()
 
 	ctx := NewContext()
-	ctx.SetClient("clientKey", client.NewClientSecretBasic(clientID, "", server.URL, clientSecret))
+	ctx.SetClient("clientKey", client.NewClientSecretBasic(clientID, "regAccessToken", server.URL, clientSecret))
 	ctx.SetGrantToken("grantTokenKey", auth.GrantToken{})
 	step := NewClientRetrieve("responseCtxKey", server.URL, "clientKey", "grantTokenKey", server.Client())
 
@@ -41,7 +41,7 @@ func TestNewClientRetrieve(t *testing.T) {
 
 func TestNewClientRegister_HandlesMakeRequestError(t *testing.T) {
 	ctx := NewContext()
-	ctx.SetClient("clientKey", client.NewClientSecretBasic(clientID, "", "", clientSecret))
+	ctx.SetClient("clientKey", client.NewClientSecretBasic(clientID, "regAccessToken", "", clientSecret))
 	ctx.SetGrantToken("grantTokenKey", auth.GrantToken{})
 	step := NewClientRetrieve("responseCtxKey", string(rune(0x7f)), "clientKey", "grantTokenKey", &http.Client{})
 
@@ -57,7 +57,7 @@ func TestNewClientRegister_HandlesMakeRequestError(t *testing.T) {
 
 func TestNewClientRegister_HandlesExecuteRequestError(t *testing.T) {
 	ctx := NewContext()
-	ctx.SetClient("clientKey", client.NewClientSecretBasic(clientID, "", "", clientSecret))
+	ctx.SetClient("clientKey", client.NewClientSecretBasic(clientID, "regAccessToken", "", clientSecret))
 	ctx.SetGrantToken("grantTokenKey", auth.GrantToken{})
 	step := NewClientRetrieve("responseCtxKey", "localhost", "clientKey", "grantTokenKey", &http.Client{})
 
@@ -86,21 +86,6 @@ func TestNewClientRegister_HandlesErrorForClientNotFound(t *testing.T) {
 	assert.Equal(
 		t,
 		"unable to find client clientKey in context: key not found in context",
-		result.FailReason,
-	)
-}
-
-func TestNewClientRegister_HandlesErrorForGrantTokenNotFound(t *testing.T) {
-	ctx := NewContext()
-	ctx.SetClient("clientKey", client.NewClientSecretBasic(clientID, "", "", clientSecret))
-	step := NewClientRetrieve("responseCtxKey", "localhost", "clientKey", "grantTokenKey", &http.Client{})
-
-	result := step.Run(ctx)
-
-	assert.False(t, result.Pass)
-	assert.Equal(
-		t,
-		"unable to find grant token grantTokenKey in context: key not found in context",
 		result.FailReason,
 	)
 }
