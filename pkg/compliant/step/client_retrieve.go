@@ -8,25 +8,25 @@ import (
 )
 
 type clientRetrieve struct {
-	client               *http.Client
-	stepName             string
-	clientCtxKey         string
-	grantTokenCtxKey     string
-	registrationEndpoint string
-	responseCtxKey       string
+	client                          *http.Client
+	stepName                        string
+	clientCtxKey                    string
+	registrationEndpoint            string
+	responseCtxKey                  string
+	overrideRegistrationAccessToken string
 }
 
 func NewClientRetrieve(
-	responseCtxKey, registrationEndpoint, clientCtxKey, grantTokenCtxKey string,
+	responseCtxKey, registrationEndpoint, clientCtxKey, overrideRegistrationAccessToken string,
 	httpClient *http.Client,
 ) Step {
 	return clientRetrieve{
-		stepName:             "Software client retrieve",
-		client:               httpClient,
-		registrationEndpoint: registrationEndpoint,
-		responseCtxKey:       responseCtxKey,
-		clientCtxKey:         clientCtxKey,
-		grantTokenCtxKey:     grantTokenCtxKey,
+		stepName:                        "Software client retrieve",
+		client:                          httpClient,
+		registrationEndpoint:            registrationEndpoint,
+		responseCtxKey:                  responseCtxKey,
+		clientCtxKey:                    clientCtxKey,
+		overrideRegistrationAccessToken: overrideRegistrationAccessToken,
 	}
 }
 
@@ -45,9 +45,15 @@ func (s clientRetrieve) Run(ctx Context) Result {
 		msg := fmt.Sprintf("unable to make request: %s", err.Error())
 		return NewFailResultWithDebug(s.stepName, msg, debug)
 	}
-	err = dcr.AddRegistrationAccessTokenAuthHeader(req, client)
-	if err != nil {
-		return NewFailResult(s.stepName, fmt.Sprintf("unable to create request %s: %v", endpoint, err))
+
+	// if we have an override then use that token, otherwise use the client's token from the dcr response
+	if s.overrideRegistrationAccessToken != "" {
+		dcr.AddAuthorizationBearerToken(req, s.overrideRegistrationAccessToken)
+	} else {
+		err = dcr.AddRegistrationAccessTokenAuthHeader(req, client)
+		if err != nil {
+			return NewFailResult(s.stepName, fmt.Sprintf("unable to create request %s: %v", endpoint, err))
+		}
 	}
 
 	debug.Log(http2.DebugRequest(req))

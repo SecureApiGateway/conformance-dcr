@@ -137,19 +137,19 @@ func (t *testCaseBuilder) ClientDelete(registrationEndpoint string) *testCaseBui
 }
 
 func (t *testCaseBuilder) ClientRetrieve(registrationEndpoint string) *testCaseBuilder {
-	nextStep := step.NewClientRetrieve(responseCtxKey, registrationEndpoint, clientCtxKey, grantTokenCtxKey, t.httpClient)
+	nextStep := step.NewClientRetrieve(responseCtxKey, registrationEndpoint, clientCtxKey, "", t.httpClient)
+	t.steps = append(t.steps, nextStep)
+	return t
+}
+
+func (t *testCaseBuilder) ClientRetrieveInvalidRegistrationAccessToken(registrationEndpoint string) *testCaseBuilder {
+	nextStep := step.NewClientRetrieve(responseCtxKey, registrationEndpoint, clientCtxKey, "invalid-access-token-123", t.httpClient)
 	t.steps = append(t.steps, nextStep)
 	return t
 }
 
 func (t *testCaseBuilder) AssertValidSchemaResponse(validator schema.Validator) *testCaseBuilder {
 	nextStep := step.NewClientRetrieveSchema(responseCtxKey, validator)
-	t.steps = append(t.steps, nextStep)
-	return t
-}
-
-func (t *testCaseBuilder) SetInvalidGrantToken() *testCaseBuilder {
-	nextStep := step.NewSetInvalidGrantToken(grantTokenCtxKey)
 	t.steps = append(t.steps, nextStep)
 	return t
 }
