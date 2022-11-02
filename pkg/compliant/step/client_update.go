@@ -5,6 +5,7 @@ import (
 	http2 "bitbucket.org/openbankingteam/conformance-dcr/pkg/http"
 	"bytes"
 	"fmt"
+	"github.com/OpenBankingUK/conformance-dcr/pkg/compliant/auth"
 	"github.com/pkg/errors"
 	"net/http"
 )
