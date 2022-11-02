@@ -347,7 +347,7 @@ func DCR32UpdateSoftwareClientWithWrongId(
 		TestCase(
 			NewTestCaseBuilder("Update a deleted software client").
 				WithHttpClient(secureClient).
-				GenerateSignedClaims(authoriserBuilder).
+				GenerateSignedClaimsForRegistrationUpdate(authoriserBuilder).
 				ClientUpdate(cfg.OpenIDConfig.RegistrationEndpointAsString()).
 				AssertStatusCodeUnauthorized().
 				Build(),
