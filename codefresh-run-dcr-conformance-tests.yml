@@ -40,4 +40,5 @@ steps:
       - ./dcr-config.json:/dcr-config.json # host path is relative to /codefresh/volume
     commands:
       - |
+        echo "Running against env: ${WELLKNOWN_ENDPOINT}"
         dcr -config-path /dcr-config.json
