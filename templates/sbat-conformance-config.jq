@@ -3,7 +3,7 @@
   "create_software_client_only": false,
   "wellknown_endpoint": $wellknown_endpoint,
   "ssa": $ssa,
-  "kid": "123",
+  "kid": "$signing_kid",
   "aud": "456",
   "redirect_uris": $redirect_uris_str|split(","),
   "issuer": $issuer,
