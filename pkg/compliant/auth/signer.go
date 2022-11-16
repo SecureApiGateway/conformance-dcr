@@ -95,6 +95,7 @@ func (s jwtSigner) Claims() (string, error) {
 		"grant_types": []string{
 			"authorization_code",
 			"client_credentials",
+			"refresh_token",
 		},
 
 		"application_type":             "web",
