@@ -49,7 +49,7 @@ func TestNewJwtSigner(t *testing.T) {
 
 	assert.Equal(t, "web", claims["application_type"])
 	assert.Equal(t, "aud", claims["aud"])
-	assert.Equal(t, []interface{}{"authorization_code", "client_credentials"}, claims["grant_types"])
+	assert.Equal(t, []interface{}{"authorization_code", "client_credentials", "refresh_token"}, claims["grant_types"])
 	assert.Equal(t, "RS256", claims["id_token_signed_response_alg"])
 	assert.Equal(t, "issuer", claims["iss"])
 	assert.Equal(t, "kid", token.Header["kid"])
@@ -88,7 +88,7 @@ func TestNewJwtSigner_TlsClientAuthAddSubjectToClaims(t *testing.T) {
 
 	assert.Equal(t, "web", claims["application_type"])
 	assert.Equal(t, "aud", claims["aud"])
-	assert.Equal(t, []interface{}{"authorization_code", "client_credentials"}, claims["grant_types"])
+	assert.Equal(t, []interface{}{"authorization_code", "client_credentials", "refresh_token"}, claims["grant_types"])
 	assert.Equal(t, "RS256", claims["id_token_signed_response_alg"])
 	assert.Equal(t, "issuer", claims["iss"])
 	assert.Equal(t, "kid", token.Header["kid"])
