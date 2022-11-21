@@ -87,6 +87,12 @@ func (t *testCaseBuilder) AssertStatusCodeBadRequest() *testCaseBuilder {
 	return t
 }
 
+func (t *testCaseBuilder) AssertErrorMessage(errorCode string, errorMessage string) *testCaseBuilder {
+	nextStep := step.NewAssertErrorMessage(errorCode, errorMessage, responseCtxKey)
+	t.steps = append(t.steps, nextStep)
+	return t
+}
+
 func (t *testCaseBuilder) AssertStatusCodeCreated() *testCaseBuilder {
 	nextStep := step.NewAssertStatus(http.StatusCreated, responseCtxKey)
 	t.steps = append(t.steps, nextStep)
