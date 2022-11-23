@@ -1,19 +1,30 @@
 package compliant
 
 import (
+	"crypto/rand"
+	"crypto/rsa"
 	"github.com/OpenBankingUK/conformance-dcr/pkg/compliant/auth"
 	"github.com/OpenBankingUK/conformance-dcr/pkg/compliant/schema"
 	"github.com/OpenBankingUK/conformance-dcr/pkg/compliant/step"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"net/http"
 	"testing"
 )
 
+func CreateDCR32UnitTestConfig() (DCR32Config, error) {
+	privateKey, _ := rsa.GenerateKey(rand.Reader, 1024)
+	// Generate a valid jwt to use as the SSA config item, just used to test building the conformance suite
+	ssa, err := jwt.NewWithClaims(jwt.SigningMethodPS256, jwt.StandardClaims{Audience: "blah"}).SignedString(privateKey)
+	config := DCR32Config{SSA: ssa}
+	return config, err
+}
+
 func TestNewDCR32(t *testing.T) {
-	// ssa jwt required to build certain test scenarios
-	ssa := "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJPbmxpbmUgSldUIEJ1aWxkZXIiLCJpYXQiOjE2NjkyMTE0NDgsImV4cCI6MTcwMDc0NzQ0OCwiYXVkIjoid3d3LmV4YW1wbGUuY29tIiwic3ViIjoiZXhhbXBsZSJ9.xWyEN4NcR6udk7zOmsE964agwyI7MwkmJqdD9AL_Iwo"
-	manifest, err := NewDCR32(DCR32Config{SSA: ssa})
+	config, err := CreateDCR32UnitTestConfig()
+	require.NoError(t, err)
+	manifest, err := NewDCR32(config)
 	require.NoError(t, err)
 
 	assert.Equal(t, "1.0", manifest.Version())
