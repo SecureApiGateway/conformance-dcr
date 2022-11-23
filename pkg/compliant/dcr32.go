@@ -27,6 +27,14 @@ func NewDCR32(cfg DCR32Config) (Manifest, error) {
 	authoriserBuilder := cfg.AuthoriserBuilder
 	validator := cfg.SchemaValidator
 
+	registrationRequestInvalidSignatureScenario, err := DCR32RegistrationRequestInvalidSignature(cfg, secureClient, authoriserBuilder)
+	if err != nil {
+		return nil, err
+	}
+	softwareStatementInvalidSigningScenario, err := DCR32RegisterInvalidSoftwareStatementSigning(cfg, secureClient, authoriserBuilder)
+	if err != nil {
+		return nil, err
+	}
 	scenarios := Scenarios{
 		DCR32ValidateOIDCConfigRegistrationURL(cfg),
 		DCR32CreateSoftwareClient(cfg, secureClient, authoriserBuilder),
@@ -38,7 +46,8 @@ func NewDCR32(cfg DCR32Config) (Manifest, error) {
 		DCR32UpdateSoftwareClientWithWrongId(cfg, secureClient, authoriserBuilder),
 		DCR32RetrieveSoftwareClientWrongId(cfg, secureClient, authoriserBuilder),
 		DCR32RegisterSoftwareWrongResponseType(cfg, secureClient, authoriserBuilder),
-		DCR32RegistrationRequestInvalidSignature(cfg, secureClient, authoriserBuilder),
+		registrationRequestInvalidSignatureScenario,
+		softwareStatementInvalidSigningScenario,
 	}
 
 	return NewManifest("DCR32", "1.0", scenarios)
@@ -411,14 +420,15 @@ func DCR32RegistrationRequestInvalidSignature(
 	cfg DCR32Config,
 	secureClient *http.Client,
 	authoriserBuilder auth.AuthoriserBuilder,
-) Scenario {
+) (Scenario, error) {
 	id := "DCR-012"
 	const name = "When I try to register with a request which has an invalid signature it should fail"
 
 	// Use a test RSA key to sign the JWT, this must fail when checked by the server as the signature will not match one produced by the private key for the configured OBSeal
 	priv, err := rsa.GenerateKey(rand.Reader, 1024)
 	if err != nil {
-		fmt.Errorf("Failed to generate RSA private key for test purposes: %v", err)
+		fmt.Errorf("failed to generate RSA private key for test purposes: %v", err)
+		return nil, err
 	}
 	authoriserBuilder = authoriserBuilder.WithPrivateKey(priv)
 
@@ -436,5 +446,67 @@ func DCR32RegistrationRequestInvalidSignature(
 				AssertErrorMessage("invalid_client_metadata", "registration JWT signature invalid").
 				Build(),
 		).
-		Build()
+		Build(), nil
+}
+
+func DCR32RegisterInvalidSoftwareStatementSigning(
+	cfg DCR32Config,
+	secureClient *http.Client,
+	authoriserBuilder auth.AuthoriserBuilder,
+) (Scenario, error) {
+	id := "DCR-013"
+	const name = "When I try to register with a software_statement claim with an invalid signature then registration MUST fail"
+
+	// decode JWT and re-sign it with a randomly generate private key
+	token, _ := jwt.Parse(cfg.SSA, func(token *jwt.Token) (interface{}, error) {
+		return nil, nil // Don't return a key, not interested in validating the sig
+	})
+
+	priv, err := rsa.GenerateKey(rand.Reader, 1024)
+	if err != nil {
+		fmt.Errorf("failed to generate RSA private key for test purposes: %v", err)
+		return nil, err
+	}
+
+	// Re-sign the SSA with an unexpected key
+	ssaSignedWithWrongKey, err := token.SignedString(priv)
+	if err != nil {
+		fmt.Errorf("failed to sign software_statement jwt, err: %v", err)
+		return nil, err
+	}
+
+	// Create an SSA with no signature
+	tokenWithNoneSign := token
+	tokenWithNoneSign.Header["alg"] = "none"
+	delete(tokenWithNoneSign.Header, "kid")
+	ssaWithNoSig, err := tokenWithNoneSign.SigningString()
+
+	return NewBuilder(
+		id,
+		name,
+		specLinkRegisterSoftware,
+	).
+		TestCase(
+			NewTestCaseBuilder("Register software client, software_statement signed with wrong key").
+				WithHttpClient(secureClient).
+				GenerateSignedClaims(
+					authoriserBuilder.WithSSA(ssaSignedWithWrongKey),
+				).
+				PostClientRegister(cfg.OpenIDConfig.RegistrationEndpointAsString()).
+				AssertStatusCodeBadRequest().
+				AssertErrorMessage("invalid_software_statement", "software_statement signature is invalid").
+				Build(),
+		).
+		TestCase(
+			NewTestCaseBuilder("Register software client, software_statement none signing alg").
+				WithHttpClient(secureClient).
+				GenerateSignedClaims(
+					authoriserBuilder.WithSSA(ssaWithNoSig),
+				).
+				PostClientRegister(cfg.OpenIDConfig.RegistrationEndpointAsString()).
+				AssertStatusCodeBadRequest().
+				AssertErrorMessage("invalid_software_statement", "software_statement is not a valid JWT").
+				Build(),
+		).
+		Build(), nil
 }
