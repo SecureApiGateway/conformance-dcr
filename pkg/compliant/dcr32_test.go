@@ -16,7 +16,7 @@ func TestNewDCR32(t *testing.T) {
 
 	assert.Equal(t, "1.0", manifest.Version())
 	assert.Equal(t, "DCR32", manifest.Name())
-	assert.Equal(t, 10, len(manifest.Scenarios()))
+	assert.Equal(t, 11, len(manifest.Scenarios()))
 }
 
 func TestDCR32ValidateOIDCConfigRegistrationURL(t *testing.T) {

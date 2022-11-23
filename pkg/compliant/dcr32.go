@@ -1,6 +1,8 @@
 package compliant
 
 import (
+	"crypto/rand"
+	"crypto/rsa"
 	"fmt"
 	"github.com/OpenBankingUK/conformance-dcr/pkg/compliant/step"
 	"github.com/dgrijalva/jwt-go"
@@ -36,6 +38,7 @@ func NewDCR32(cfg DCR32Config) (Manifest, error) {
 		DCR32UpdateSoftwareClientWithWrongId(cfg, secureClient, authoriserBuilder),
 		DCR32RetrieveSoftwareClientWrongId(cfg, secureClient, authoriserBuilder),
 		DCR32RegisterSoftwareWrongResponseType(cfg, secureClient, authoriserBuilder),
+		DCR32RegistrationRequestInvalidSignature(cfg, secureClient, authoriserBuilder),
 	}
 
 	return NewManifest("DCR32", "1.0", scenarios)
@@ -399,6 +402,38 @@ func DCR32RegisterSoftwareWrongResponseType(
 				PostClientRegister(cfg.OpenIDConfig.RegistrationEndpointAsString()).
 				AssertStatusCodeBadRequest().
 				ParseClientRegisterResponse(authoriserBuilder).
+				Build(),
+		).
+		Build()
+}
+
+func DCR32RegistrationRequestInvalidSignature(
+	cfg DCR32Config,
+	secureClient *http.Client,
+	authoriserBuilder auth.AuthoriserBuilder,
+) Scenario {
+	id := "DCR-012"
+	const name = "When I try to register with a request which has an invalid signature it should fail"
+
+	// Use a test RSA key to sign the JWT, this must fail when checked by the server as the signature will not match one produced by the private key for the configured OBSeal
+	priv, err := rsa.GenerateKey(rand.Reader, 1024)
+	if err != nil {
+		fmt.Errorf("Failed to generate RSA private key for test purposes: %v", err)
+	}
+	authoriserBuilder = authoriserBuilder.WithPrivateKey(priv)
+
+	return NewBuilder(
+		id,
+		name,
+		specLinkRegisterSoftware,
+	).
+		TestCase(
+			NewTestCaseBuilder("Register software client").
+				WithHttpClient(secureClient).
+				GenerateSignedClaims(authoriserBuilder).
+				PostClientRegister(cfg.OpenIDConfig.RegistrationEndpointAsString()).
+				AssertStatusCodeBadRequest().
+				AssertErrorMessage("invalid_client_metadata", "registration JWT signature invalid").
 				Build(),
 		).
 		Build()
