@@ -227,7 +227,7 @@ func DCR32CreateInvalidRegistrationRequest(
 				GenerateSignedClaims(authoriserBuilder.WithRedirectURIs([]string{"https://abc.com"})).
 				PostClientRegister(cfg.OpenIDConfig.RegistrationEndpointAsString()).
 				AssertStatusCodeBadRequest().
-				AssertErrorMessage("invalid_redirect_uri", "invalid registration request redirect_uris value, must match or be a subset of the software_statement.redirect_uris").
+				AssertErrorMessage("invalid_redirect_uri", "invalid registration request redirect_uris value, must match or be a subset of the software_redirect_uris").
 				Build(),
 		).Build()
 }
