@@ -434,7 +434,7 @@ func DCR32RegistrationRequestInvalidSignature(
 	const name = "When I try to register with a request which has an invalid signature it should fail"
 
 	// Use a test RSA key to sign the JWT, this must fail when checked by the server as the signature will not match one produced by the private key for the configured OBSeal
-	priv, err := rsa.GenerateKey(rand.Reader, 1024)
+	priv, err := generateRsaPrivateKey()
 	if err != nil {
 		fmt.Errorf("failed to generate RSA private key for test purposes: %v", err)
 		return nil, err
@@ -447,9 +447,18 @@ func DCR32RegistrationRequestInvalidSignature(
 		specLinkRegisterSoftware,
 	).
 		TestCase(
-			NewTestCaseBuilder("Register software client").
+			NewTestCaseBuilder("Register software client signed with wrong key").
 				WithHttpClient(secureClient).
 				GenerateSignedClaims(authoriserBuilder).
+				PostClientRegister(cfg.OpenIDConfig.RegistrationEndpointAsString()).
+				AssertStatusCodeBadRequest().
+				AssertErrorMessage("invalid_client_metadata", "registration JWT signature invalid").
+				Build(),
+		).
+		TestCase(
+			NewTestCaseBuilder("Register software client signed with unsupported alg none").
+				WithHttpClient(secureClient).
+				GenerateSignedClaims(authoriserBuilder.WithPreferredTokenEndpointAuthMethod("none")).
 				PostClientRegister(cfg.OpenIDConfig.RegistrationEndpointAsString()).
 				AssertStatusCodeBadRequest().
 				AssertErrorMessage("invalid_client_metadata", "registration JWT signature invalid").
@@ -471,7 +480,7 @@ func DCR32RegisterInvalidSoftwareStatementSigning(
 		return nil, nil // Don't return a key, not interested in validating the sig
 	})
 
-	priv, err := rsa.GenerateKey(rand.Reader, 1024)
+	priv, err := generateRsaPrivateKey()
 	if err != nil {
 		fmt.Errorf("failed to generate RSA private key for test purposes: %v", err)
 		return nil, err
@@ -518,4 +527,8 @@ func DCR32RegisterInvalidSoftwareStatementSigning(
 				Build(),
 		).
 		Build(), nil
+}
+
+func generateRsaPrivateKey() (*rsa.PrivateKey, error) {
+	return rsa.GenerateKey(rand.Reader, 2048)
 }
