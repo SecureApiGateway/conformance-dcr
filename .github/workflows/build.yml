@@ -1,0 +1,29 @@
+name: Check Changes
+
+on:
+  pull_request:
+    branches-ignore:    
+      - 'sbat-master'
+    paths-ignore:
+      - README.md
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    container: golang:1.17-alpine3.15
+    env:
+      CGO_ENABLED: 0
+      GOOS: linux
+      GOARCH: amd64
+    name: Check PR integrity
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Install packages
+        run: apk update && apk add git make bash curl
+      - name: make tools
+        run: make tools
+      - name: Build
+        run: make build
+      - name: Test
+        run: make test
