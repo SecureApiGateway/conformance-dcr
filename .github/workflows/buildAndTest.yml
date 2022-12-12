@@ -66,5 +66,5 @@ jobs:
         env:
           PIPELINE_NAME: 'ForgeCloud/sbat-infra/dcr-conformance-tests'
           CF_API_KEY: ${{ secrets.CF_API_KEY }}
-          TRIGGER_NAME: 'empty'
+          TRIGGER_NAME: 'manual'
         id: run-tests
