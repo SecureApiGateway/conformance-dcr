@@ -31,7 +31,7 @@ jobs:
       
       - name: Build & Push Docker Image
         run: |
-          docker build --file Dockerfile-sbat -t eu.gcr.io/${{ secrets.DEV_REPO }}/securebanking//${{ env.SPEC_IMAGE }}:${{ env.GITHUB_REF }} .
-          docker tag eu.gcr.io/${{ secrets.DEV_REPO }}/securebanking//${{ env.SPEC_IMAGE }}:${{ env.GITHUB_REF }} eu.gcr.io/${{ secrets.DEV_REPO }}/securebanking//${{ env.SPEC_IMAGE }}:latest
+          docker build --file Dockerfile-sbat -t eu.gcr.io/${{ secrets.DEV_REPO }}/securebanking/${{ env.SPEC_IMAGE }}:${{ env.GITHUB_REF }} .
+          docker tag eu.gcr.io/${{ secrets.DEV_REPO }}/securebanking/${{ env.SPEC_IMAGE }}:${{ env.GITHUB_REF }} eu.gcr.io/${{ secrets.DEV_REPO }}/securebanking/${{ env.SPEC_IMAGE }}:latest
           docker push eu.gcr.io/${{ secrets.DEV_REPO }}/securebanking/${{ env.SPEC_IMAGE }}:${{ env.GITHUB_REF }}
           docker push eu.gcr.io/${{ secrets.DEV_REPO }}/securebanking/${{ env.SPEC_IMAGE }}:latest
