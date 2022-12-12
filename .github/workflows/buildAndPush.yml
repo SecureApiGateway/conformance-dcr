@@ -8,7 +8,6 @@ on:
       - README.md
 
 env:
-  PR_NUMBER: pr-${{ github.event.number }}
   SPEC_IMAGE: conformance-dcr
 
 jobs:
