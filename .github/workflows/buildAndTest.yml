@@ -9,7 +9,7 @@ on:
 
 env:
   PR_NUMBER: pr-${{ github.event.number }}
-  SPEC_IMAGE: uk-conformance-dcr
+  IMAGE_REPO: securebanking/tests/uk-conformance-dcr
 
 jobs:
   check:
@@ -62,7 +62,7 @@ jobs:
       - name: 'Run Conformance-DCR Tests'
         uses: codefresh-io/codefresh-pipeline-runner@master
         with:
-          args: '-v SPEC_IMAGE=${{ env.SPEC_IMAGE }} -v TAG=${{ env.PR_NUMBER }}'
+          args: '-v IMAGE_REPO=${{ env.IMAGE_REPO }} -v TAG=${{ env.PR_NUMBER }}'
         env:
           PIPELINE_NAME: 'ForgeCloud/sbat-infra/dcr-conformance-tests'
           CF_API_KEY: ${{ secrets.CF_API_KEY }}
