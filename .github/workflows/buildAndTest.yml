@@ -52,8 +52,8 @@ jobs:
       
       - name: Build & Push Docker Image
         run: |
-          docker build --file Dockerfile-sbat -t eu.gcr.io/${{ secrets.DEV_REPO }}/securebanking/tests/${{ env.SPEC_IMAGE }}:${{ env.PR_NUMBER }} .
-          docker push eu.gcr.io/${{ secrets.DEV_REPO }}/securebanking/tests/${{ env.SPEC_IMAGE }}:${{ env.PR_NUMBER }}
+          docker build --file Dockerfile-sbat -t eu.gcr.io/${{ secrets.DEV_REPO }}/${{ env.IMAGE_REPO }}:${{ env.PR_NUMBER }} .
+          docker push eu.gcr.io/${{ secrets.DEV_REPO }}/${{ env.IMAGE_REPO }}:${{ env.PR_NUMBER }}
   test:
     runs-on: ubuntu-latest
     name: Test Image
