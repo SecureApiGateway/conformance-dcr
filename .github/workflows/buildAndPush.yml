@@ -1,0 +1,38 @@
+name: Build and Test Image
+
+on:
+  push:
+    branches:
+      - sbat-master
+    paths-ignore:
+      - README.md
+
+env:
+  PR_NUMBER: pr-${{ github.event.number }}
+  SPEC_IMAGE: conformance-dcr
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build Image
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Auth GCloud GCR
+        uses: google-github-actions/auth@v0
+        with:
+          credentials_json: ${{ secrets.GCR_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0
+      
+      - name: Configure Docker
+        run: |
+          gcloud auth configure-docker
+      
+      - name: Build & Push Docker Image
+        run: |
+          docker build --file Dockerfile-sbat -t eu.gcr.io/${{ secrets.DEV_REPO }}/securebanking//${{ env.SPEC_IMAGE }}:${{ env.GITHUB_REF }} .
+          docker tag eu.gcr.io/${{ secrets.DEV_REPO }}/securebanking//${{ env.SPEC_IMAGE }}:${{ env.GITHUB_REF }} eu.gcr.io/${{ secrets.DEV_REPO }}/securebanking//${{ env.SPEC_IMAGE }}:latest
+          docker push eu.gcr.io/${{ secrets.DEV_REPO }}/securebanking/${{ env.SPEC_IMAGE }}:${{ env.GITHUB_REF }}
+          docker push eu.gcr.io/${{ secrets.DEV_REPO }}/securebanking/${{ env.SPEC_IMAGE }}:latest
