@@ -9,6 +9,7 @@ on:
 
 env:
   SPEC_IMAGE: conformance-dcr
+  GITHUB_REF: ${{ github.sha }}
 
 jobs:
   build:
