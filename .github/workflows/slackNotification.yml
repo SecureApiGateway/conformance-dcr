@@ -3,7 +3,7 @@ name: Check Changes
 on:
   push:
     branches:
-      - master
+      - sbat-master
 
 jobs:
   check:
