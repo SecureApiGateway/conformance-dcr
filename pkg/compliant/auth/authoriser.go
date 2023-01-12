@@ -100,7 +100,19 @@ func NewAuthoriser(
 	return none{}
 }
 
-func createNewPrivateKeyJwtClient(config openid.Configuration, ssa string, aud string, kid string, issuer string, tokenEndpointSignMethod jwt.SigningMethod, redirectURIs []string, responseTypes []string, privateKey *rsa.PrivateKey, jwtExpiration time.Duration, transportCert *x509.Certificate, transportSubjectDn string, requestObjectSignAlg string, clientId string) Authoriser {
+func createNewPrivateKeyJwtClient(
+	config openid.Configuration,
+	ssa string, aud string, kid string, issuer string,
+	tokenEndpointSignMethod jwt.SigningMethod,
+	redirectURIs []string,
+	responseTypes []string,
+	privateKey *rsa.PrivateKey,
+	jwtExpiration time.Duration,
+	transportCert *x509.Certificate,
+	transportSubjectDn string,
+	requestObjectSignAlg string,
+	clientId string,
+) Authoriser {
 	return NewClientPrivateKeyJwt(
 		config.TokenEndpoint,
 		tokenEndpointSignMethod,
@@ -124,7 +136,19 @@ func createNewPrivateKeyJwtClient(config openid.Configuration, ssa string, aud s
 	)
 }
 
-func createNewTlsClientAuth(config openid.Configuration, ssa string, aud string, kid string, issuer string, tokenEndpointSignMethod jwt.SigningMethod, redirectURIs []string, responseTypes []string, privateKey *rsa.PrivateKey, jwtExpiration time.Duration, transportCert *x509.Certificate, transportSubjectDn string, requestObjectSignAlg string, clientId string) Authoriser {
+func createNewTlsClientAuth(
+	config openid.Configuration,
+	ssa string, aud string, kid string, issuer string,
+	tokenEndpointSignMethod jwt.SigningMethod,
+	redirectURIs []string,
+	responseTypes []string,
+	privateKey *rsa.PrivateKey,
+	jwtExpiration time.Duration,
+	transportCert *x509.Certificate,
+	transportSubjectDn string,
+	requestObjectSignAlg string,
+	clientId string,
+) Authoriser {
 	return NewTlsClientAuth(
 		config.TokenEndpoint,
 		NewJwtSigner(
