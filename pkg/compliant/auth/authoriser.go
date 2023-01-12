@@ -36,73 +36,24 @@ func NewAuthoriser(
 
 	if preferredTokenEndpointAuthMethod != "" {
 		if sliceContains(preferredTokenEndpointAuthMethod, config.TokenEndpointAuthMethodsSupported) {
-			return NewClientPrivateKeyJwt(
-				config.TokenEndpoint,
-				tokenEndpointSignMethod,
-				privateKey,
-				NewJwtSigner(
-					tokenEndpointSignMethod,
-					ssa,
-					issuer,
-					aud,
-					kid,
-					preferredTokenEndpointAuthMethod,
-					requestObjectSignAlg,
-					redirectURIs,
-					responseTypes,
-					privateKey,
-					jwtExpiration,
-					transportCert,
-					transportSubjectDn,
-					clientId,
-				),
-			)
+			if preferredTokenEndpointAuthMethod == "tls_client_auth" {
+				return createNewTlsClientAuth(config, ssa, aud, kid, issuer, tokenEndpointSignMethod, redirectURIs,
+					responseTypes, privateKey, jwtExpiration, transportCert, transportSubjectDn, requestObjectSignAlg, clientId)
+			}
+			if preferredTokenEndpointAuthMethod == "private_key_jwt" {
+				return createNewPrivateKeyJwtClient(config, ssa, aud, kid, issuer, tokenEndpointSignMethod, redirectURIs,
+					responseTypes, privateKey, jwtExpiration, transportCert, transportSubjectDn, requestObjectSignAlg, clientId)
+			}
 		}
 	}
 
 	if sliceContains("tls_client_auth", config.TokenEndpointAuthMethodsSupported) {
-		return NewTlsClientAuth(
-			config.TokenEndpoint,
-			NewJwtSigner(
-				tokenEndpointSignMethod,
-				ssa,
-				issuer,
-				aud,
-				kid,
-				"tls_client_auth",
-				requestObjectSignAlg,
-				redirectURIs,
-				responseTypes,
-				privateKey,
-				jwtExpiration,
-				transportCert,
-				transportSubjectDn,
-				clientId,
-			),
-		)
+		return createNewTlsClientAuth(config, ssa, aud, kid, issuer, tokenEndpointSignMethod, redirectURIs, responseTypes,
+			privateKey, jwtExpiration, transportCert, transportSubjectDn, requestObjectSignAlg, clientId)
 	}
 	if sliceContains("private_key_jwt", config.TokenEndpointAuthMethodsSupported) {
-		return NewClientPrivateKeyJwt(
-			config.TokenEndpoint,
-			tokenEndpointSignMethod,
-			privateKey,
-			NewJwtSigner(
-				tokenEndpointSignMethod,
-				ssa,
-				issuer,
-				aud,
-				kid,
-				"private_key_jwt",
-				requestObjectSignAlg,
-				redirectURIs,
-				responseTypes,
-				privateKey,
-				jwtExpiration,
-				transportCert,
-				transportSubjectDn,
-				clientId,
-			),
-		)
+		return createNewPrivateKeyJwtClient(config, ssa, aud, kid, issuer, tokenEndpointSignMethod, redirectURIs, responseTypes,
+			privateKey, jwtExpiration, transportCert, transportSubjectDn, requestObjectSignAlg, clientId)
 	}
 	if sliceContains("client_secret_jwt", config.TokenEndpointAuthMethodsSupported) {
 		return NewClientSecretJWT(
@@ -147,6 +98,76 @@ func NewAuthoriser(
 		)
 	}
 	return none{}
+}
+
+func createNewPrivateKeyJwtClient(
+	config openid.Configuration,
+	ssa string, aud string, kid string, issuer string,
+	tokenEndpointSignMethod jwt.SigningMethod,
+	redirectURIs []string,
+	responseTypes []string,
+	privateKey *rsa.PrivateKey,
+	jwtExpiration time.Duration,
+	transportCert *x509.Certificate,
+	transportSubjectDn string,
+	requestObjectSignAlg string,
+	clientId string,
+) Authoriser {
+	return NewClientPrivateKeyJwt(
+		config.TokenEndpoint,
+		tokenEndpointSignMethod,
+		privateKey,
+		NewJwtSigner(
+			tokenEndpointSignMethod,
+			ssa,
+			issuer,
+			aud,
+			kid,
+			"private_key_jwt",
+			requestObjectSignAlg,
+			redirectURIs,
+			responseTypes,
+			privateKey,
+			jwtExpiration,
+			transportCert,
+			transportSubjectDn,
+			clientId,
+		),
+	)
+}
+
+func createNewTlsClientAuth(
+	config openid.Configuration,
+	ssa string, aud string, kid string, issuer string,
+	tokenEndpointSignMethod jwt.SigningMethod,
+	redirectURIs []string,
+	responseTypes []string,
+	privateKey *rsa.PrivateKey,
+	jwtExpiration time.Duration,
+	transportCert *x509.Certificate,
+	transportSubjectDn string,
+	requestObjectSignAlg string,
+	clientId string,
+) Authoriser {
+	return NewTlsClientAuth(
+		config.TokenEndpoint,
+		NewJwtSigner(
+			tokenEndpointSignMethod,
+			ssa,
+			issuer,
+			aud,
+			kid,
+			"tls_client_auth",
+			requestObjectSignAlg,
+			redirectURIs,
+			responseTypes,
+			privateKey,
+			jwtExpiration,
+			transportCert,
+			transportSubjectDn,
+			clientId,
+		),
+	)
 }
 
 func sliceContains(value string, list []string) bool {

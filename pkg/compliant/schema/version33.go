@@ -93,7 +93,7 @@ func (v responseValidator33) Validate(data io.Reader) []Failure {
 		),
 		"tls_client_auth_subject_dn": validation.Validate(
 			registrationResponse.TLSClientAuthSubjectDn,
-			validation.Length(1, 128),
+			validation.Length(1, 256),
 		),
 	}
 	failures = append(failures, toFailures(errs)...)
