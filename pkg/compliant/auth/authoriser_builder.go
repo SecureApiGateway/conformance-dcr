@@ -100,6 +100,11 @@ func (b AuthoriserBuilder) WithClientId(clientId string) AuthoriserBuilder {
 	return b
 }
 
+func (b AuthoriserBuilder) WithTokenEndpointSigningMethod(tokenEndpointSignMethod *jwt.SigningMethodHMAC) AuthoriserBuilder {
+	b.tokenEndpointSignMethod = tokenEndpointSignMethod
+	return b
+}
+
 func (b AuthoriserBuilder) Build() (Authoriser, error) {
 	if b.ssa == "" {
 		return none{}, errors.New("missing ssa from authoriser")

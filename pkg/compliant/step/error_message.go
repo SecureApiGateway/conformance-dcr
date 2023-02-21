@@ -3,6 +3,7 @@ package step
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 )
 
 type AssertErrorMessage struct {
@@ -41,7 +42,7 @@ func (expectedErrorResponse AssertErrorMessage) Run(ctx Context) Result {
 	if actualErrorResponse.ErrorCode != expectedErrorResponse.ErrorCode {
 		return NewFailResult(expectedErrorResponse.StepName, fmt.Sprintf("Invalid error response, expected error: %s, got error: %s", expectedErrorResponse.ErrorCode, actualErrorResponse.ErrorCode))
 	}
-	if actualErrorResponse.ErrorMessage != expectedErrorResponse.ErrorMessage {
+	if !strings.Contains(actualErrorResponse.ErrorMessage, expectedErrorResponse.ErrorMessage) {
 		return NewFailResult(expectedErrorResponse.StepName, fmt.Sprintf("Invalid error response, expected error_description: %s, got error_description: %s", expectedErrorResponse.ErrorMessage, actualErrorResponse.ErrorMessage))
 	}
 	return NewPassResultWithDebug(expectedErrorResponse.StepName, debug)
