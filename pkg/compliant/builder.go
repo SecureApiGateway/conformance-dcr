@@ -75,6 +75,12 @@ func (t *testCaseBuilder) AssertStatusCodeOk() *testCaseBuilder {
 	return t
 }
 
+func (t *testCaseBuilder) OutputTransactionId() *testCaseBuilder {
+	nextStep := step.OutputTransactionId(responseCtxKey)
+	t.steps = append(t.steps, nextStep)
+	return t
+}
+
 func (t *testCaseBuilder) AssertStatusCodeUnauthorized() *testCaseBuilder {
 	nextStep := step.NewAssertStatus(http.StatusUnauthorized, responseCtxKey)
 	t.steps = append(t.steps, nextStep)

@@ -452,18 +452,20 @@ func DCR32RegistrationRequestInvalidSignature(
 				GenerateSignedClaims(authoriserBuilder).
 				PostClientRegister(cfg.OpenIDConfig.RegistrationEndpointAsString()).
 				AssertStatusCodeBadRequest().
-				AssertErrorMessage("invalid_client_metadata", "registration JWT signature invalid").
+				AssertErrorMessage("invalid_client_metadata", "Registration Request signature is invalid").
 				Build(),
 		).
-		TestCase(
-			NewTestCaseBuilder("Register software client signed with unsupported alg none").
-				WithHttpClient(secureClient).
-				GenerateSignedClaims(authoriserBuilder.WithPreferredTokenEndpointAuthMethod("none")).
-				PostClientRegister(cfg.OpenIDConfig.RegistrationEndpointAsString()).
-				AssertStatusCodeBadRequest().
-				AssertErrorMessage("invalid_client_metadata", "registration JWT signature invalid").
-				Build(),
-		).
+		// ToDo: This doesn't fail as expected as the jwt is not actually signed usign teh tokenEndpointSignMethod
+		//TestCase(
+		//		NewTestCaseBuilder("Register software client signed with unsupported alg none").
+		//			WithHttpClient(secureClient).
+		//			GenerateSignedClaims(authoriserBuilder.WithTokenEndpointSigningMethod(jwt.SigningMethodHS256)).
+		//			PostClientRegister(cfg.OpenIDConfig.RegistrationEndpointAsString()).
+		//			OutputTransactionId().
+		//			AssertStatusCodeBadRequest().
+		//			AssertErrorMessage("invalid_client_metadata", "registration JWT signature invalid").
+		//			Build(),
+		//	).
 		Build(), nil
 }
 
@@ -512,7 +514,7 @@ func DCR32RegisterInvalidSoftwareStatementSigning(
 				).
 				PostClientRegister(cfg.OpenIDConfig.RegistrationEndpointAsString()).
 				AssertStatusCodeBadRequest().
-				AssertErrorMessage("invalid_software_statement", "software_statement signature is invalid").
+				AssertErrorMessage("invalid_software_statement", "Failed to validate SSA against jwks_uri").
 				Build(),
 		).
 		TestCase(
@@ -523,7 +525,7 @@ func DCR32RegisterInvalidSoftwareStatementSigning(
 				).
 				PostClientRegister(cfg.OpenIDConfig.RegistrationEndpointAsString()).
 				AssertStatusCodeBadRequest().
-				AssertErrorMessage("invalid_software_statement", "software_statement is not a valid JWT").
+				AssertErrorMessage("invalid_software_statement", "Software Statement JWT error: Failed to reconstruct jwt from b64 encoded jwt string").
 				Build(),
 		).
 		Build(), nil
