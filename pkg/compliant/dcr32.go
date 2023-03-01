@@ -100,6 +100,7 @@ func DCR32CreateSoftwareClientTestCases(
 			WithHttpClient(secureClient).
 			GenerateSignedClaims(authoriserBuilder).
 			PostClientRegister(cfg.OpenIDConfig.RegistrationEndpointAsString()).
+			OutputTransactionId().
 			AssertStatusCodeCreated().
 			ParseClientRegisterResponse(authoriserBuilder).
 			Build(),

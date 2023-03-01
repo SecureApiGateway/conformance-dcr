@@ -59,7 +59,8 @@ func (s clientRetrieve) Run(ctx Context) Result {
 	debug.Log(http2.DebugRequest(req))
 	res, err := s.client.Do(req)
 	if err != nil {
-		msg := fmt.Sprintf("unable to call endpoint %s: %v", endpoint, err)
+		msg := fmt.Sprintf("unable to call endpoint %s: %v. x-fapi-interaction-id: %s", endpoint, err,
+			res.Header.Get("x-fapi-interaction-id"))
 		return NewFailResultWithDebug(s.stepName, msg, debug)
 	}
 
