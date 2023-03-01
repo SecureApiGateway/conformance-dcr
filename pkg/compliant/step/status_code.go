@@ -32,7 +32,8 @@ func (a assertStatusCode) Run(ctx Context) Result {
 		debug.Log(http.DebugResponse(r))
 		return NewFailResultWithDebug(
 			a.stepName,
-			fmt.Sprintf("Expecting status code %d but got %d", a.code, r.StatusCode),
+			fmt.Sprintf("Expecting status code %d but got %d. x-fapi-interaction-id: %s", a.code, r.StatusCode,
+				r.Header.Get("x-fapi-interaction-id")),
 			debug,
 		)
 	}

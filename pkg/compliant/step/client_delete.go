@@ -54,7 +54,8 @@ func (s clientDelete) Run(ctx Context) Result {
 	debug.Log(http2.DebugResponse(res))
 
 	if res.StatusCode != http.StatusNoContent {
-		message := fmt.Sprintf("unexpected status code %d, should be %d", res.StatusCode, http.StatusNoContent)
+		message := fmt.Sprintf("unexpected status code %d, should be %d. x-fapi-interaction-id %s",
+			res.StatusCode, http.StatusNoContent, res.Header.Get("x-fapi-interaction-id"))
 		return NewFailResultWithDebug(s.stepName, message, debug)
 	}
 

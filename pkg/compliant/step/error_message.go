@@ -20,7 +20,8 @@ type ErrorResponseBody struct {
 
 func NewAssertErrorMessage(errorCode, errorMessage, responseContextVar string) Step {
 	return AssertErrorMessage{
-		errorCode, errorMessage, responseContextVar, fmt.Sprintf("Assert Error Response, error: %s AND error_description: %s", errorCode, errorMessage),
+		errorCode, errorMessage, responseContextVar,
+		fmt.Sprintf("Assert Error Response, error: %s AND error_description: %s", errorCode, errorMessage),
 	}
 }
 
