@@ -1,5 +1,5 @@
 name: build_and_push
-run-name: Build and push image ${{ env.SERVICE_NAME }}
+run-name: Build and push image
 on:
   push:
     branches:
