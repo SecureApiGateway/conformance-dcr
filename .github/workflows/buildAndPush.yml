@@ -1,5 +1,5 @@
-name: Build and Push Image
-
+name: build_and_push
+run-name: Build and push image
 on:
   push:
     branches:
@@ -8,7 +8,7 @@ on:
       - README.md
 
 env:
-  SPEC_IMAGE: conformance-dcr
+  SERVICE_NAME: conformance-dcr
   GITHUB_REF: ${{ github.sha }}
 
 jobs:
@@ -18,10 +18,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
       - name: Auth GCloud GCR
         uses: google-github-actions/auth@v0
         with:
-          credentials_json: ${{ secrets.GCR_KEY }}
+          credentials_json: ${{ secrets.GCR_CREDENTIALS_JSON }}
 
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v0
@@ -32,7 +33,6 @@ jobs:
       
       - name: Build & Push Docker Image
         run: |
-          docker build --file Dockerfile-sbat -t eu.gcr.io/${{ secrets.DEV_REPO }}/securebanking/${{ env.SPEC_IMAGE }}:${{ env.GITHUB_REF }} .
-          docker tag eu.gcr.io/${{ secrets.DEV_REPO }}/securebanking/${{ env.SPEC_IMAGE }}:${{ env.GITHUB_REF }} eu.gcr.io/${{ secrets.DEV_REPO }}/securebanking/${{ env.SPEC_IMAGE }}:latest
-          docker push eu.gcr.io/${{ secrets.DEV_REPO }}/securebanking/${{ env.SPEC_IMAGE }}:${{ env.GITHUB_REF }}
-          docker push eu.gcr.io/${{ secrets.DEV_REPO }}/securebanking/${{ env.SPEC_IMAGE }}:latest
+          docker build --file Dockerfile-sbat -t eu.gcr.io/${{ secrets.GCR_DEV_REPO }}/securebanking/${{ env.SERVICE_NAME }}:${{ env.GITHUB_REF }} .
+          docker tag eu.gcr.io/${{ secrets.GCR_DEV_REPO }}/securebanking/${{ env.SERVICE_NAME }}:${{ env.GITHUB_REF }} eu.gcr.io/${{ secrets.GCR_DEV_REPO }}/securebanking/${{ env.SERVICE_NAME }}:latest
+          docker push --all-tags eu.gcr.io/${{ secrets.GCR_DEV_REPO }}/securebanking/${{ env.SERVICE_NAME }}

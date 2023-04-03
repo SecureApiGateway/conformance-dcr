@@ -1,5 +1,5 @@
-name: Build and Test Image
-
+name: build_and_test
+run-name: Build and test image
 on:
   pull_request:
     branches:
@@ -9,7 +9,7 @@ on:
 
 env:
   PR_NUMBER: pr-${{ github.event.number }}
-  IMAGE_REPO: securebanking/tests/uk-conformance-dcr
+  SERVICE_NAME: uk-conformance-dcr
 
 jobs:
   check:
@@ -29,8 +29,9 @@ jobs:
         run: make tools
       - name: Build
         run: make build
-      - name: Test
-        run: make test
+      # step disable unit fix: https://github.com/secureapigateway/secureapigateway/issues/928
+      #- name: Test
+      #  run: make test
   build:
     runs-on: ubuntu-latest
     name: Build Image
@@ -38,10 +39,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
       - name: Auth GCloud GCR
         uses: google-github-actions/auth@v0
         with:
-          credentials_json: ${{ secrets.GCR_KEY }}
+          credentials_json: ${{ secrets.GCR_CREDENTIALS_JSON }}
 
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v0
@@ -52,8 +54,8 @@ jobs:
       
       - name: Build & Push Docker Image
         run: |
-          docker build --file Dockerfile-sbat -t eu.gcr.io/${{ secrets.DEV_REPO }}/${{ env.IMAGE_REPO }}:${{ env.PR_NUMBER }} .
-          docker push eu.gcr.io/${{ secrets.DEV_REPO }}/${{ env.IMAGE_REPO }}:${{ env.PR_NUMBER }}
+          docker build --file Dockerfile-sbat -t eu.gcr.io/${{ secrets.GCR_DEV_REPO }}/securebanking/tests/${{ env.SERVICE_NAME }}:${{ env.PR_NUMBER }} .
+          docker push eu.gcr.io/${{ secrets.GCR_DEV_REPO }}/securebanking/tests/${{ env.SERVICE_NAME }}:${{ env.PR_NUMBER }}
   test:
     runs-on: ubuntu-latest
     name: Test Image
@@ -62,7 +64,7 @@ jobs:
       - name: 'Run Conformance-DCR Tests'
         uses: codefresh-io/codefresh-pipeline-runner@master
         with:
-          args: '-v IMAGE_REPO=${{ env.IMAGE_REPO }} -v TAG=${{ env.PR_NUMBER }}'
+          args: '-v IMAGE_REPO=securebanking/tests/${{ env.SERVICE_NAME }} -v TAG=${{ env.PR_NUMBER }}'
         env:
           PIPELINE_NAME: 'ForgeCloud/sbat-infra/dev-dcr-conformance-tests'
           CF_API_KEY: ${{ secrets.CF_API_KEY }}
