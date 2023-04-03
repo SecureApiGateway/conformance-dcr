@@ -94,3 +94,12 @@ lint: ## Basic linting and vetting of code
 lint_fix: ## Basic linting and vetting of code with fix option enabled
 	@printf "%b" "\033[93m" "  ---> Linting with fix enabled ... " "\033[0m" "\n"
 	golangci-lint run --fix --config ./.golangci.yml ./...
+
+# docker
+name := tests/uk-conformance-dcr
+repo := sbat-gcr-develop
+tag := latest
+
+docker:
+	docker build --file Dockerfile-sbat -t eu.gcr.io/${repo}/securebanking/${name}:${tag} .
+	docker push eu.gcr.io/${repo}/securebanking/${name}:${tag}
