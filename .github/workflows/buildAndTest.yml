@@ -9,7 +9,7 @@ on:
 
 env:
   PR_NUMBER: pr-${{ github.event.number }}
-  SERVICE_NAME: uk-conformance-dcr
+  SERVICE_NAME: securebanking/tests/uk-conformance-dcr
 
 jobs:
   check:
@@ -53,8 +53,8 @@ jobs:
       
       - name: Build & Push Docker Image
         run: |
-          docker build --file Dockerfile-sbat -t eu.gcr.io/${{ secrets.GCR_DEV_REPO }}/securebanking/tests/${{ env.SERVICE_NAME }}:${{ env.PR_NUMBER }} .
-          docker push eu.gcr.io/${{ secrets.GCR_DEV_REPO }}/securebanking/tests/${{ env.SERVICE_NAME }}:${{ env.PR_NUMBER }}
+          docker build --file Dockerfile-sbat -t eu.gcr.io/${{ secrets.GCR_DEV_REPO }}/${{ env.SERVICE_NAME }}:${{ env.PR_NUMBER }} .
+          docker push eu.gcr.io/${{ secrets.GCR_DEV_REPO }}/${{ env.SERVICE_NAME }}:${{ env.PR_NUMBER }}
   test:
     runs-on: ubuntu-latest
     name: Test Image
@@ -63,7 +63,7 @@ jobs:
       - name: 'Run Conformance-DCR Tests'
         uses: codefresh-io/codefresh-pipeline-runner@master
         with:
-          args: '-v IMAGE_REPO=${{ env.IMAGE_REPO }} -v TAG=${{ env.PR_NUMBER }}'
+          args: '-v IMAGE_REPO=${{ env.SERVICE_NAME }} -v TAG=${{ env.PR_NUMBER }}'
         env:
           PIPELINE_NAME: 'ForgeCloud/sbat-infra/dev-dcr-conformance-tests'
           CF_API_KEY: ${{ secrets.CF_API_KEY }}
