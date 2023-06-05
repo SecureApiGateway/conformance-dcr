@@ -36,3 +36,5 @@ To run against Ozone:
 ```sh
 git clone git@bitbucket.org:openbankingteam/conformance-dcr.git && cd conformance-dcr && make build && ./dcr -config-path configs/config.json
 ```
+
+This will not get merged
