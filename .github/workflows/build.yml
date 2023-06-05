@@ -4,8 +4,6 @@ on:
   pull_request:
     branches-ignore:    
       - 'sbat-master'
-    paths-ignore:
-      - README.md
 
 jobs:
   check:
