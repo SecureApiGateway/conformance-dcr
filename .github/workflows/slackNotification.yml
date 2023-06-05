@@ -1,5 +1,4 @@
-name: Check Changes
-
+name: Slack Notification
 on:
   push:
     branches:
