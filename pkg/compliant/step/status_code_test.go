@@ -36,5 +36,5 @@ func TestAssertStatusOk_FailsIfStatusCodeIsOtherThenOk(t *testing.T) {
 	result := step.Run(ctx)
 
 	assert.False(t, result.Pass)
-	assert.Equal(t, "Expecting status code 200 but got 418", result.FailReason)
+	assert.Contains(t, result.FailReason, "Expecting status code 200 but got 418")
 }

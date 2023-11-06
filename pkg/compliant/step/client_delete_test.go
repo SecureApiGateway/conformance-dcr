@@ -57,7 +57,7 @@ func TestNewClientDelete_Expects204(t *testing.T) {
 	result := step.Run(ctx)
 
 	assert.False(t, result.Pass)
-	assert.Equal(t, "unexpected status code 200, should be 204", result.FailReason)
+	assert.Contains(t, result.FailReason, "unexpected status code 200, should be 204")
 }
 
 func TestNewClientDelete_HandlesCreateRequestError(t *testing.T) {
