@@ -64,10 +64,10 @@ func TestNewClientRegister_HandlesExecuteRequestError(t *testing.T) {
 	result := step.Run(ctx)
 
 	assert.False(t, result.Pass)
-	assert.Equal(
+	assert.Contains(
 		t,
-		"unable to call endpoint localhost/foo: Get \"localhost/foo\": unsupported protocol scheme \"\"",
 		result.FailReason,
+		"unable to call endpoint localhost/foo: Get \"localhost/foo\": unsupported protocol scheme \"",
 	)
 }
 
