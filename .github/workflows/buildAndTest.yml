@@ -42,7 +42,7 @@ jobs:
       - name: Authenticate GCP
         uses: google-github-actions/auth@v2
         with:
-          credentials_json: ${{ secrets.GCR_CREDENTIALS_JSON }}
+          credentials_json: ${{ secrets.DEV_GAR_KEY }}
 
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v0
