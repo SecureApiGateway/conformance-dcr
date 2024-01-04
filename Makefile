@@ -44,14 +44,14 @@ build_image: ## build the docker image. Use available args IMAGE_TAG=v1.x.y, ENA
 
 .PHONY: build_sbat_image
 build_sbat_image: ## build the docker image. Use available args IMAGE_TAG=v1.x.y
-	docker build --file Dockerfile-sbat ${DOCKER_BUILD_ARGS} -t "eu.gcr.io/sbat-gcr-develop/securebanking/conformance-dcr:${IMAGE_TAG}" .
+	docker build --file Dockerfile-sbat ${DOCKER_BUILD_ARGS} -t "europe-west4-docker.pkg.dev/sbat-gcr-develop/sapig-docker-artifact/securebanking/conformance-dcr:${IMAGE_TAG}" .
 
 ##@ Dependencies:
 
 .PHONY: tools
 tools: ## install go tools (goimports, golangci-lint)
 	@echo -e "\033[92m  ---> Installing Go Tools ... \033[0m"
-	go get -u golang.org/x/tools/cmd/goimports
+	go get -u golang.org/x/tools/cmd/goimports@v0.14.0
 	@printf "%b" "\033[93m" "  ---> Installing golangci-lint@v1.16.0 (https://github.com/golangci/golangci-lint) ... " "\033[0m" "\n"
 	curl -sfL "https://install.goreleaser.com/github.com/golangci/golangci-lint.sh" | sh -s -- -b $(shell go env GOPATH)/bin v1.21.0
 
@@ -96,10 +96,9 @@ lint_fix: ## Basic linting and vetting of code with fix option enabled
 	golangci-lint run --fix --config ./.golangci.yml ./...
 
 # docker
-name := tests/uk-conformance-dcr
-repo := sbat-gcr-develop
+name := pr/uk-conformance-dcr
 tag := latest
 
 docker:
-	docker build --file Dockerfile-sbat -t eu.gcr.io/${repo}/securebanking/${name}:${tag} .
-	docker push eu.gcr.io/${repo}/securebanking/${name}:${tag}
+	docker build --file Dockerfile-sbat -t europe-west4-docker.pkg.dev/sbat-gcr-develop/sapig-docker-artifact/securebanking/${name}:${tag} .
+	docker push europe-west4-docker.pkg.dev/sbat-gcr-develop/sapig-docker-artifact/securebanking/${name}:${tag}
