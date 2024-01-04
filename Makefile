@@ -51,7 +51,7 @@ build_sbat_image: ## build the docker image. Use available args IMAGE_TAG=v1.x.y
 .PHONY: tools
 tools: ## install go tools (goimports, golangci-lint)
 	@echo -e "\033[92m  ---> Installing Go Tools ... \033[0m"
-	go get -u golang.org/x/tools/cmd/goimports
+	go get -u golang.org/x/tools/cmd/goimports@v0.14.0
 	@printf "%b" "\033[93m" "  ---> Installing golangci-lint@v1.16.0 (https://github.com/golangci/golangci-lint) ... " "\033[0m" "\n"
 	curl -sfL "https://install.goreleaser.com/github.com/golangci/golangci-lint.sh" | sh -s -- -b $(shell go env GOPATH)/bin v1.21.0
 
