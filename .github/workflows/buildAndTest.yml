@@ -45,7 +45,7 @@ jobs:
           credentials_json: ${{ secrets.DEV_GAR_KEY }}
 
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v0
+        uses: google-github-actions/setup-gcloud@v1.1.1
       
       - name: Auth Docker
         run: |
