@@ -25,6 +25,5 @@ jobs:
         run: make tools
       - name: Build
         run: make build
-      # step disable unit fix: https://github.com/secureapigateway/secureapigateway/issues/928
-      #- name: Test
-      #  run: make test
+      - name: Test
+        run: make test
