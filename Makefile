@@ -44,7 +44,7 @@ build_image: ## build the docker image. Use available args IMAGE_TAG=v1.x.y, ENA
 
 .PHONY: build_sbat_image
 build_sbat_image: ## build the docker image. Use available args IMAGE_TAG=v1.x.y
-	docker build --file Dockerfile-sbat ${DOCKER_BUILD_ARGS} -t "eu.gcr.io/sbat-gcr-develop/securebanking/conformance-dcr:${IMAGE_TAG}" .
+	docker build --file Dockerfile-sbat ${DOCKER_BUILD_ARGS} -t "europe-west4-docker.pkg.dev/sbat-gcr-develop/sapig-docker-artifact/securebanking/conformance-dcr:${IMAGE_TAG}" .
 
 ##@ Dependencies:
 
@@ -96,10 +96,9 @@ lint_fix: ## Basic linting and vetting of code with fix option enabled
 	golangci-lint run --fix --config ./.golangci.yml ./...
 
 # docker
-name := tests/uk-conformance-dcr
-repo := sbat-gcr-develop
+name := pr/uk-conformance-dcr
 tag := latest
 
 docker:
-	docker build --file Dockerfile-sbat -t eu.gcr.io/${repo}/securebanking/${name}:${tag} .
-	docker push eu.gcr.io/${repo}/securebanking/${name}:${tag}
+	docker build --file Dockerfile-sbat -t europe-west4-docker.pkg.dev/sbat-gcr-develop/sapig-docker-artifact/securebanking/${name}:${tag} .
+	docker push europe-west4-docker.pkg.dev/sbat-gcr-develop/sapig-docker-artifact/securebanking/${name}:${tag}
