@@ -34,5 +34,5 @@ jobs:
       - name: Build & Push Docker Image
         run: |
           make docker name=uk-conformance-dcr tag=${{ env.GIT_SHA_SHORT }}
-          docker tag ${{ secrets.GCR_DEV_REPO }}/securebanking/${{ env.SERVICE_NAME}}:${{ env.GIT_SHA_SHORT }} ${{ secrets.GCR_DEV_REPO }}/securebanking/${{ env.SERVICE_NAME}}:latest
-          docker push --all-tags ${{ secrets.GCR_DEV_REPO }}/securebanking/${{ env.SERVICE_NAME}}
+          docker tag ${{ secrets.GCR_DEV_REPO }}/securebanking/pr/${{ env.SERVICE_NAME}}:${{ env.GIT_SHA_SHORT }} ${{ secrets.GCR_DEV_REPO }}/securebanking/${{ env.SERVICE_NAME}}:latest
+          docker push ${{ secrets.GCR_DEV_REPO }}/securebanking/${{ env.SERVICE_NAME}}:latest
