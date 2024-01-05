@@ -8,8 +8,8 @@ on:
       - README.md
 
 env:
+  GIT_SHA_SHORT: $(echo ${{ github.sha }} | cut -c1-7)
   SERVICE_NAME: conformance-dcr
-  GITHUB_REF: ${{ github.sha }}
 
 jobs:
   build:
@@ -33,5 +33,6 @@ jobs:
       
       - name: Build & Push Docker Image
         run: |
-          docker build --file Dockerfile-sbat -t ${{ vars.GAR_DEV_REPO }}/securebanking/${{ env.SERVICE_NAME }}:${{ env.GITHUB_REF }} -t ${{ vars.GAR_DEV_REPO }}/securebanking/${{ env.SERVICE_NAME }}:latest .
-          docker push ${{ vars.GAR_DEV_REPO }}/securebanking/${{ env.SERVICE_NAME }} --all-tags
+          make docker name=uk-conformance-dcr tag=${{ env.GIT_SHA_SHORT }}
+          docker tag ${{ secrets.GCR_DEV_REPO }}/securebanking/${{ env.SERVICE_NAME}}:${{ env.GIT_SHA_SHORT }} ${{ secrets.GCR_DEV_REPO }}/securebanking/${{ env.SERVICE_NAME}}:latest
+          docker push --all-tags ${{ secrets.GCR_DEV_REPO }}/securebanking/${{ env.SERVICE_NAME}}
