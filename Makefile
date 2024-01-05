@@ -98,7 +98,8 @@ lint_fix: ## Basic linting and vetting of code with fix option enabled
 # docker
 name := pr/uk-conformance-dcr
 tag := latest
+repo := europe-west4-docker.pkg.dev/sbat-gcr-develop/sapig-docker-artifact
 
 docker:
-	docker build --file Dockerfile-sbat -t europe-west4-docker.pkg.dev/sbat-gcr-develop/sapig-docker-artifact/securebanking/${name}:${tag} .
-	docker push europe-west4-docker.pkg.dev/sbat-gcr-develop/sapig-docker-artifact/securebanking/${name}:${tag}
+	docker build --file Dockerfile-sbat -t ${repo}/securebanking/${name}:${tag} .
+	docker push ${repo}/securebanking/${name}:${tag}

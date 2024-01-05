@@ -53,8 +53,7 @@ jobs:
       
       - name: Build & Push Docker Image
         run: |
-          docker build --file Dockerfile-sbat -t ${{ vars.GAR_DEV_REPO }}/securebanking/pr/${{ env.SERVICE_NAME }}:${{ env.PR_NUMBER }} .
-          docker push ${{ vars.GAR_DEV_REPO }}/securebanking/pr/${{ env.SERVICE_NAME }}:${{ env.PR_NUMBER }}
+          make docker tag=${{ env.PR_NUMBER }}
   test:
     runs-on: ubuntu-latest
     name: Test Image
