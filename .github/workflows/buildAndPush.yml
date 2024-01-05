@@ -34,5 +34,5 @@ jobs:
       - name: Build & Push Docker Image
         run: |
           make docker name=${{ env.SERVICE_NAME }}
-          docker tag ${{ secrets.GCR_DEV_REPO }}/securebanking/${{ env.SERVICE_NAME}}:latest ${{ secrets.GCR_DEV_REPO }}/securebanking/${{ env.SERVICE_NAME}}:${{ env.GIT_SHA_SHORT }}
-          docker push ${{ secrets.GCR_DEV_REPO }}/securebanking/${{ env.SERVICE_NAME}}:${{ env.GIT_SHA_SHORT }}
+          docker tag ${{ secrets.GAR_DEV_REPO }}/securebanking/${{ env.SERVICE_NAME}}:latest ${{ secrets.GAR_DEV_REPO }}/securebanking/${{ env.SERVICE_NAME}}:${{ env.GIT_SHA_SHORT }}
+          docker push ${{ secrets.GAR_DEV_REPO }}/securebanking/${{ env.SERVICE_NAME}}:${{ env.GIT_SHA_SHORT }}
