@@ -39,7 +39,7 @@ jobs:
       with_maven: false
     secrets:
       GCR_CREDENTIALS_JSON: ${{ secrets.DEV_GAR_KEY }}
-      GCR_RELEASE_REPO: ${{ secrets.GCR_RELEASE_REPO }}
+      GCR_RELEASE_REPO: ${{ vars.GAR_RELEASE_REPO }}
 
   release_draft_no_pr:
     name: Call publish release draft
