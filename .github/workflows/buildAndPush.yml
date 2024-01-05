@@ -9,7 +9,7 @@ on:
 
 env:
   GIT_SHA_SHORT: $(echo ${{ github.sha }} | cut -c1-7)
-  SERVICE_NAME: conformance-dcr
+  SERVICE_NAME: uk-conformance-dcr
 
 jobs:
   build:
