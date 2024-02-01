@@ -36,10 +36,10 @@ jobs:
       release_version_number: ${{ inputs.release_version_number }}
       release_tag_ref: ${{ needs.release_prepare_no_maven.outputs.release_tag_ref }}
       SERVICE_NAME: tests/uk-conformance-dcr
+      GAR_RELEASE_REPO: ${{ vars.GAR_RELEASE_REPO }}
       with_maven: false
     secrets:
       GCR_CREDENTIALS_JSON: ${{ secrets.DEV_GAR_KEY }}
-      GCR_RELEASE_REPO: ${{ vars.GAR_RELEASE_REPO }}
 
   release_draft_no_pr:
     name: Call publish release draft
