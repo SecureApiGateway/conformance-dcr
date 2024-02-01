@@ -96,7 +96,7 @@ lint_fix: ## Basic linting and vetting of code with fix option enabled
 	golangci-lint run --fix --config ./.golangci.yml ./...
 
 # docker
-name := pr/uk-conformance-dcr
+name := uk-conformance-dcr
 tag := latest
 repo := europe-west4-docker.pkg.dev/sbat-gcr-develop/sapig-docker-artifact
 
