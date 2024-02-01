@@ -35,7 +35,7 @@ jobs:
     with:
       release_version_number: ${{ inputs.release_version_number }}
       release_tag_ref: ${{ needs.release_prepare_no_maven.outputs.release_tag_ref }}
-      SERVICE_NAME: tests/uk-conformance-dcr
+      SERVICE_NAME: uk-conformance-dcr
       GAR_RELEASE_REPO: ${{ vars.GAR_RELEASE_REPO }}
       with_maven: false
     secrets:
