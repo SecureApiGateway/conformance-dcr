@@ -18,7 +18,7 @@ jobs:
     name: Check PR integrity
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Install packages
         run: apk update && apk add git make bash curl
       - name: make tools
