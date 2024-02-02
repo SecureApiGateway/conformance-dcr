@@ -22,7 +22,7 @@ jobs:
     name: Check New Changes
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Install packages
         run: apk update && apk add git make bash curl
       - name: make tools
@@ -37,7 +37,7 @@ jobs:
     needs: check
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Authenticate GCP
         uses: google-github-actions/auth@v2
