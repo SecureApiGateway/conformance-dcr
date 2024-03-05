@@ -64,7 +64,7 @@ jobs:
         with:
           args: '-v IMAGE_REPO=securebanking/pr/${{ env.SERVICE_NAME }} -v TAG=${{ env.PR_NUMBER }}'
         env:
-          PIPELINE_NAME: 'ForgeCloud/sbat-infra/dev-dcr-conformance-tests'
+          PIPELINE_NAME: 'ForgeCloud/sbat-infra/dev-ob-dcr-conformance-tests'
           CF_API_KEY: ${{ secrets.CF_API_KEY }}
           TRIGGER_NAME: 'github-actions-trigger-dcr'
         id: run-tests
