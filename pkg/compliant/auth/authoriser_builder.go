@@ -27,8 +27,7 @@ type AuthoriserBuilder struct {
 
 func NewAuthoriserBuilder() AuthoriserBuilder {
 	return AuthoriserBuilder{
-		jwtExpiration:                  time.Hour,
-		authorizationSignedResponseAlg: "PS256",
+		jwtExpiration: time.Hour,
 	}
 }
 

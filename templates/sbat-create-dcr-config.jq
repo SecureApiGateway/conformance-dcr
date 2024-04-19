@@ -17,5 +17,6 @@
   "delete_implemented": false,
   "environment": "sandbox",
   "brand": "Brand/product",
-  "preferred_token_endpoint_auth_method": $token_endpoint_auth_method
+  "preferred_token_endpoint_auth_method": $token_endpoint_auth_method,
+  "authorization_signed_response_alg": "PS256"
 }
