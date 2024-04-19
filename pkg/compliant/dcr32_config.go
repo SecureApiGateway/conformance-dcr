@@ -46,6 +46,7 @@ func NewDCR32Config(
 	specVersion string,
 	preferredTokenEndpointAuthMethod string,
 	createSoftwareClientOnly bool,
+	authorizationSignedResponseAlg string,
 ) (DCR32Config, error) {
 	privateKey, err := jwt.ParseRSAPrivateKeyFromPEM([]byte(signingKeyPEM))
 	if err != nil {
@@ -85,7 +86,8 @@ func NewDCR32Config(
 		WithTokenEndpointAuthMethod(tokenSignMethod).
 		WithTransportCert(transportCert).
 		WithTransportCertSubjectDn(transportCertSubjectDn).
-		WithPreferredTokenEndpointAuthMethod(preferredTokenEndpointAuthMethod)
+		WithPreferredTokenEndpointAuthMethod(preferredTokenEndpointAuthMethod).
+		WithAuthorizationSignedResponseAlg(authorizationSignedResponseAlg)
 
 	secureClient, err := http.NewBuilder().
 		WithRootCAs(transportRootCAs).

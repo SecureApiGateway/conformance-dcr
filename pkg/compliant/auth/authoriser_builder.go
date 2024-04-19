@@ -22,11 +22,13 @@ type AuthoriserBuilder struct {
 	transportCertSubjectDn           string
 	preferredTokenEndpointAuthMethod string
 	clientId                         string
+	authorizationSignedResponseAlg   string
 }
 
 func NewAuthoriserBuilder() AuthoriserBuilder {
 	return AuthoriserBuilder{
-		jwtExpiration: time.Hour,
+		jwtExpiration:                  time.Hour,
+		authorizationSignedResponseAlg: "PS256",
 	}
 }
 
@@ -105,6 +107,11 @@ func (b AuthoriserBuilder) WithTokenEndpointSigningMethod(tokenEndpointSignMetho
 	return b
 }
 
+func (b AuthoriserBuilder) WithAuthorizationSignedResponseAlg(authorizationSignedResponseAlg string) AuthoriserBuilder {
+	b.authorizationSignedResponseAlg = authorizationSignedResponseAlg
+	return b
+}
+
 func (b AuthoriserBuilder) Build() (Authoriser, error) {
 	if b.ssa == "" {
 		return none{}, errors.New("missing ssa from authoriser")
@@ -133,5 +140,6 @@ func (b AuthoriserBuilder) Build() (Authoriser, error) {
 		b.transportCertSubjectDn,
 		b.preferredTokenEndpointAuthMethod,
 		b.clientId,
+		b.authorizationSignedResponseAlg,
 	), nil
 }

@@ -28,6 +28,7 @@ func NewAuthoriser(
 	transportSubjectDn string,
 	preferredTokenEndpointAuthMethod string,
 	clientId string,
+	authorizationSignedResponseAlg string,
 ) Authoriser {
 	requestObjectSignAlg := "none"
 	if len(config.RequestObjectSignAlgSupported) > 0 {
@@ -38,22 +39,24 @@ func NewAuthoriser(
 		if sliceContains(preferredTokenEndpointAuthMethod, config.TokenEndpointAuthMethodsSupported) {
 			if preferredTokenEndpointAuthMethod == "tls_client_auth" {
 				return createNewTlsClientAuth(config, ssa, aud, kid, issuer, tokenEndpointSignMethod, redirectURIs,
-					responseTypes, privateKey, jwtExpiration, transportCert, transportSubjectDn, requestObjectSignAlg, clientId)
+					responseTypes, privateKey, jwtExpiration, transportCert, transportSubjectDn, requestObjectSignAlg,
+					clientId, authorizationSignedResponseAlg)
 			}
 			if preferredTokenEndpointAuthMethod == "private_key_jwt" {
 				return createNewPrivateKeyJwtClient(config, ssa, aud, kid, issuer, tokenEndpointSignMethod, redirectURIs,
-					responseTypes, privateKey, jwtExpiration, transportCert, transportSubjectDn, requestObjectSignAlg, clientId)
+					responseTypes, privateKey, jwtExpiration, transportCert, transportSubjectDn, requestObjectSignAlg,
+					clientId, authorizationSignedResponseAlg)
 			}
 		}
 	}
 
 	if sliceContains("tls_client_auth", config.TokenEndpointAuthMethodsSupported) {
 		return createNewTlsClientAuth(config, ssa, aud, kid, issuer, tokenEndpointSignMethod, redirectURIs, responseTypes,
-			privateKey, jwtExpiration, transportCert, transportSubjectDn, requestObjectSignAlg, clientId)
+			privateKey, jwtExpiration, transportCert, transportSubjectDn, requestObjectSignAlg, clientId, authorizationSignedResponseAlg)
 	}
 	if sliceContains("private_key_jwt", config.TokenEndpointAuthMethodsSupported) {
 		return createNewPrivateKeyJwtClient(config, ssa, aud, kid, issuer, tokenEndpointSignMethod, redirectURIs, responseTypes,
-			privateKey, jwtExpiration, transportCert, transportSubjectDn, requestObjectSignAlg, clientId)
+			privateKey, jwtExpiration, transportCert, transportSubjectDn, requestObjectSignAlg, clientId, authorizationSignedResponseAlg)
 	}
 	if sliceContains("client_secret_jwt", config.TokenEndpointAuthMethodsSupported) {
 		return NewClientSecretJWT(
@@ -73,6 +76,7 @@ func NewAuthoriser(
 				transportCert,
 				transportSubjectDn,
 				clientId,
+				authorizationSignedResponseAlg,
 			),
 		)
 	}
@@ -94,6 +98,7 @@ func NewAuthoriser(
 				transportCert,
 				transportSubjectDn,
 				clientId,
+				authorizationSignedResponseAlg,
 			),
 		)
 	}
@@ -112,6 +117,7 @@ func createNewPrivateKeyJwtClient(
 	transportSubjectDn string,
 	requestObjectSignAlg string,
 	clientId string,
+	authorizationSignedResponseAlg string,
 ) Authoriser {
 	return NewClientPrivateKeyJwt(
 		config.TokenEndpoint,
@@ -132,6 +138,7 @@ func createNewPrivateKeyJwtClient(
 			transportCert,
 			transportSubjectDn,
 			clientId,
+			authorizationSignedResponseAlg,
 		),
 	)
 }
@@ -148,6 +155,7 @@ func createNewTlsClientAuth(
 	transportSubjectDn string,
 	requestObjectSignAlg string,
 	clientId string,
+	authorizationSignedResponseAlg string,
 ) Authoriser {
 	return NewTlsClientAuth(
 		config.TokenEndpoint,
@@ -166,6 +174,7 @@ func createNewTlsClientAuth(
 			transportCert,
 			transportSubjectDn,
 			clientId,
+			authorizationSignedResponseAlg,
 		),
 	)
 }

@@ -31,6 +31,7 @@ type Config struct {
 	Brand                            string   `json:"brand"`
 	PreferredTokenEndPointAuthMethod string   `json:"preferred_token_endpoint_auth_method"`
 	CreateSoftwareClientOnly         bool     `json:"create_software_client_only"`
+	AuthorizationSignedResponseAlg   string   `json:"authorization_signed_response_alg"`
 }
 
 func LoadConfig(configFilePath string) (Config, error) {

@@ -85,6 +85,7 @@ func runCmd(flags flags) {
 		cfg.SpecVersion,
 		cfg.PreferredTokenEndPointAuthMethod,
 		cfg.CreateSoftwareClientOnly,
+		cfg.AuthorizationSignedResponseAlg,
 	)
 	exitOnError(err)
 

@@ -15,20 +15,21 @@ type Signer interface {
 }
 
 type jwtSigner struct {
-	signingAlgorithm        jwt.SigningMethod
-	ssa                     string
-	issuer                  string
-	audience                string
-	kID                     string
-	tokenEndpointAuthMethod string
-	requestObjectSignAlg    string
-	redirectURIs            []string
-	responseTypes           []string
-	privateKey              *rsa.PrivateKey
-	jwtExpiration           time.Duration
-	transportCert           *x509.Certificate
-	transportSubjectDn      string
-	clientId                string
+	signingAlgorithm               jwt.SigningMethod
+	ssa                            string
+	issuer                         string
+	audience                       string
+	kID                            string
+	tokenEndpointAuthMethod        string
+	requestObjectSignAlg           string
+	redirectURIs                   []string
+	responseTypes                  []string
+	privateKey                     *rsa.PrivateKey
+	jwtExpiration                  time.Duration
+	transportCert                  *x509.Certificate
+	transportSubjectDn             string
+	clientId                       string
+	authorizationSignedResponseAlg string
 }
 
 func NewJwtSigner(
@@ -46,22 +47,24 @@ func NewJwtSigner(
 	transportCert *x509.Certificate,
 	transportSubjectDn string,
 	clientId string,
+	authorizationSignedResponseAlg string,
 ) Signer {
 	return jwtSigner{
-		signingAlgorithm:        signingAlgorithm,
-		ssa:                     ssa,
-		issuer:                  issuer,
-		audience:                audience,
-		kID:                     kID,
-		tokenEndpointAuthMethod: tokenEndpointAuthMethod,
-		requestObjectSignAlg:    requestObjectSignAlg,
-		redirectURIs:            redirectURIs,
-		responseTypes:           responseTypes,
-		privateKey:              privateKey,
-		jwtExpiration:           jwtExpiration,
-		transportCert:           transportCert,
-		transportSubjectDn:      transportSubjectDn,
-		clientId:                clientId,
+		signingAlgorithm:               signingAlgorithm,
+		ssa:                            ssa,
+		issuer:                         issuer,
+		audience:                       audience,
+		kID:                            kID,
+		tokenEndpointAuthMethod:        tokenEndpointAuthMethod,
+		requestObjectSignAlg:           requestObjectSignAlg,
+		redirectURIs:                   redirectURIs,
+		responseTypes:                  responseTypes,
+		privateKey:                     privateKey,
+		jwtExpiration:                  jwtExpiration,
+		transportCert:                  transportCert,
+		transportSubjectDn:             transportSubjectDn,
+		clientId:                       clientId,
+		authorizationSignedResponseAlg: authorizationSignedResponseAlg,
 	}
 }
 func (s jwtSigner) Claims() (string, error) {
@@ -114,6 +117,10 @@ func (s jwtSigner) Claims() (string, error) {
 
 	if s.responseTypes != nil {
 		claims["response_types"] = s.responseTypes
+	}
+
+	if s.authorizationSignedResponseAlg != "" {
+		claims["authorization_signed_response_alg"] = s.authorizationSignedResponseAlg
 	}
 
 	// Instead of potentially custom ASN/OID parsing to get exact, expected value of Subject DN
