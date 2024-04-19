@@ -30,6 +30,7 @@ func TestNewClientSecretJWT_Claims(t *testing.T) {
 			nil,
 			"",
 			"",
+			"",
 		),
 	)
 
@@ -57,6 +58,7 @@ func TestClientSecretJWT_Client_ReturnsAClient(t *testing.T) {
 			privateKey,
 			time.Hour,
 			nil,
+			"",
 			"",
 			"",
 		),
