@@ -8,7 +8,7 @@ on:
 jobs:
   run_pr-template:
     name: Build Changes
-    uses: SecureApiGateway/secure-api-gateway-ci/.github/workflows/conformance-dcr/build-on-push.yml@1389-standard-steps-for-workflows
+    uses: SecureApiGateway/secure-api-gateway-ci/.github/workflows/dcr-build-on-push.yml@1389-standard-steps-for-workflows
     secrets: inherit
     with:
       componentName: conformance-dcr
