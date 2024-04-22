@@ -7,8 +7,8 @@ on:
       - '**/README.md'
 jobs:
   run_pr-template:
-    name: PR - Build and Deploy
-    uses: SecureApiGateway/secure-api-gateway-ci/.github/workflows/conformance-dcr-template.yml@1389-standard-steps-for-workflows
+    name: Build Changes
+    uses: SecureApiGateway/secure-api-gateway-ci/.github/workflows/conformance-dcr/build-on-push.yml@1389-standard-steps-for-workflows
     secrets: inherit
     with:
       componentName: conformance-dcr
