@@ -4,7 +4,7 @@ on:
     branches:
       - sbat-master
     paths-ignore:
-      - '**/README.md'
+      - README.md
 jobs:
   run_pr-template:
     name: PR - Build and Deploy
