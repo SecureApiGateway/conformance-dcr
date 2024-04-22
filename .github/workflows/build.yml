@@ -1,6 +1,6 @@
 name: Check Changes
 on:
-  pull_request:
+  push:
     branches-ignore:
       - 'sbat-master'
     paths-ignore:
