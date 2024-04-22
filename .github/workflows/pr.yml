@@ -1,4 +1,4 @@
-name: Check Changes
+name: PR - Build and Deploy
 on:
   pull_request:
     branches:
