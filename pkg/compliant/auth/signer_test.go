@@ -31,6 +31,7 @@ func TestNewJwtSigner(t *testing.T) {
 		&x509.Certificate{},
 		"",
 		"",
+		"PS256",
 	)
 
 	signedClaims, err := signer.Claims()
@@ -61,6 +62,7 @@ func TestNewJwtSigner(t *testing.T) {
 	assert.Equal(t, "ssa", claims["software_statement"])
 	assert.Equal(t, "private_key_jwt", claims["token_endpoint_auth_method"])
 	assert.Equal(t, nil, claims["tls_client_auth_subject_dn"])
+	assert.Equal(t, "PS256", claims["authorization_signed_response_alg"])
 }
 
 func TestNewJwtSigner_TlsClientAuthAddSubjectToClaims(t *testing.T) {
@@ -82,6 +84,7 @@ func TestNewJwtSigner_TlsClientAuthAddSubjectToClaims(t *testing.T) {
 		&x509.Certificate{Subject: pkix.Name{Organization: []string{"OB"}}},
 		"",
 		"",
+		"",
 	)
 
 	token, claims := getJwtClaims(t, signer, privateKey)
@@ -100,6 +103,8 @@ func TestNewJwtSigner_TlsClientAuthAddSubjectToClaims(t *testing.T) {
 	assert.Equal(t, "ssa", claims["software_statement"])
 	assert.Equal(t, "tls_client_auth", claims["token_endpoint_auth_method"])
 	assert.Equal(t, "O=OB", claims["tls_client_auth_subject_dn"])
+
+	assert.NotContains(t, claims, "authorization_signed_response_alg")
 }
 
 func TestNewJwtSigner_TlsClientAuthAddConfigurableSubjectToClaims(t *testing.T) {
@@ -119,6 +124,7 @@ func TestNewJwtSigner_TlsClientAuthAddConfigurableSubjectToClaims(t *testing.T) 
 		time.Hour,
 		&x509.Certificate{Subject: pkix.Name{Organization: []string{"OB"}}},
 		"CN=Configured Subject DN",
+		"",
 		"",
 	)
 
@@ -162,6 +168,7 @@ func TestNewJwtSigner_TlsClientAuthDoesNotPanicOnMissingCert(t *testing.T) {
 		nil,
 		"",
 		"",
+		"",
 	)
 
 	_, err = signer.Claims()
@@ -188,6 +195,7 @@ func TestNewJwtSigner_OmitsEmptyResponseTypes(t *testing.T) {
 		privateKey,
 		time.Hour,
 		&x509.Certificate{Subject: pkix.Name{Organization: []string{"OB"}}},
+		"",
 		"",
 		"",
 	)

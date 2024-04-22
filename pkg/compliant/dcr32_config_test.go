@@ -37,6 +37,7 @@ func TestNewDCR32Config(t *testing.T) {
 		"3.2",
 		"",
 		false,
+		"PS256",
 	)
 	require.NoError(t, err)
 
