@@ -107,9 +107,9 @@ ifndef setlatest
 endif
 
 	if [ "${setlatest}" = "true" ]; then \
-		docker build --file Dockerfile-sbat -t ${repo}/securebanking/${service}:${tag} -t ${repo}/securebanking/${service}:latest; \
+		docker build --file Dockerfile-sbat -t ${repo}/securebanking/${service}:${tag} -t ${repo}/securebanking/${service}:latest . ; \
 		docker push ${repo}/securebanking/${service} --all-tags; \
     else \
-   		docker build --file Dockerfile-sbat -t ${repo}/securebanking/${service}:${tag}; \
+   		docker build --file Dockerfile-sbat -t ${repo}/securebanking/${service}:${tag} . ; \
    		docker push ${repo}/securebanking/${service}:${tag}; \
    	fi;
