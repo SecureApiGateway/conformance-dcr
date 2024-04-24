@@ -4,12 +4,12 @@ on:
     branches:
       - sbat-master
     paths-ignore:
-      - README.md
+      - '**/README.md'
 jobs:
   run_pr-template:
     name: PR - Build and Deploy
-    uses: SecureApiGateway/secure-api-gateway-ci/.github/workflows/reusable-pr.yml@1389-standard-steps-for-workflows
+    uses: SecureApiGateway/secure-api-gateway-ci/.github/workflows/reusable-pr.yml@main
     secrets: inherit
     with:
       componentName: conformance-dcr
-      prNumber: pr-${{ github.event.number }}
+      dockerTag: pr-${{ github.event.number }}
