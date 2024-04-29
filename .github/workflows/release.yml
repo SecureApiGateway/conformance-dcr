@@ -1,55 +1,23 @@
-name: create-release
-run-name: Create release '${{ inputs.release_version_number }}'
-# What it does:
-# - Call release-prepare-no-maven
-# - Call release-publish-docker workflow
-# - Call release-publish-draft-only
+name: Release - Build, Deploy & Create Release
+run-name: "${{ inputs.releaseVersion }}: Release - Build, Deploy & Create Release"
 on:
   workflow_dispatch:
     inputs:
-      notes:
-        description: "Release notes"
+      releaseNotes:
+        description: "Release Notes - Issues Included in Release"
         required: false
         type: string
-        default: ''
-      release_version_number:
-        description: "Provide release version number"
+      releaseVersion:
+        description: "The version to be Released (#.#.# | #.#.#-rc#)"
         required: true
         type: string
-
 jobs:
-
-  release_prepare_no_maven: # prepare for a release in scm, creates the tag and release branch with the proper release versions
-    name: Call release prepare
-    uses: SecureApiGateway/secure-api-gateway-parent/.github/workflows/release-prepare-no-maven.yml@master
+  run_release-template:
+    name: Release - Build, Deploy & Create Release
+    uses: SecureApiGateway/secure-api-gateway-ci/.github/workflows/reusable-release.yml@main
+    secrets: inherit
     with:
-      release_version_number: ${{ inputs.release_version_number }}
-    secrets:
-      GIT_COMMIT_USERNAME_BOT: ${{ secrets.GIT_COMMIT_USERNAME_BOT }}
-      GIT_COMMIT_AUTHOR_EMAIL_BOT: ${{ secrets.GIT_COMMIT_AUTHOR_EMAIL_BOT }}
-      release_github_token: ${{ secrets.RELEASE_PAT }}
-
-
-  release_docker:
-    name: Call publish docker
-    needs: [ release_prepare_no_maven ]
-    uses: SecureApiGateway/secure-api-gateway-parent/.github/workflows/release-publish-docker.yml@master
-    with:
-      release_version_number: ${{ inputs.release_version_number }}
-      release_tag_ref: ${{ needs.release_prepare_no_maven.outputs.release_tag_ref }}
-      SERVICE_NAME: uk-conformance-dcr
-      GAR_RELEASE_REPO: ${{ vars.GAR_RELEASE_REPO }}
-      with_maven: false
-    secrets:
-      GCR_CREDENTIALS_JSON: ${{ secrets.DEV_GAR_KEY }}
-
-  release_publish:
-    name: Call publish
-    needs: [ release_prepare_no_maven, release_docker ]
-    uses: SecureApiGateway/secure-api-gateway-parent/.github/workflows/release-publish.yml@master
-    with:
-      release_version_number: ${{ inputs.release_version_number }}
-      release_tag_ref: ${{ needs.release_prepare_no_maven.outputs.release_tag_ref }}
-      release_notes: ${{ inputs.notes }}
-    secrets:
-      release_github_token: ${{ secrets.RELEASE_PAT }}
+      componentName: conformance-dcr
+      dockerTag: $(echo ${{ github.sha }} | cut -c1-7)
+      releaseNotes: ${{ inputs.releaseNotes }}
+      releaseVersion: ${{ inputs.releaseVersion }}
