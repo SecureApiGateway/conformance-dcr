@@ -7,8 +7,6 @@ on:
       - ob-v*
     paths-ignore:
       - '**/README.md'
-env:
-  BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
 
 jobs:
   run_merge-template:
@@ -16,6 +14,6 @@ jobs:
     uses: SecureApiGateway/secure-api-gateway-ci/.github/workflows/reusable-merge.yml@main
     secrets: inherit
     with:
-      componentBranch: $BRANCH_NAME
+      componentBranch: ${{ github.head_ref || github.ref_name }}
       componentName: conformance-dcr
       dockerTag: $(echo ${{ github.sha }} | cut -c1-7)
