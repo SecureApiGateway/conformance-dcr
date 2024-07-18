@@ -98,6 +98,7 @@ lint_fix: ## Basic linting and vetting of code with fix option enabled
 # docker
 service := uk-conformance-dcr
 repo := europe-west4-docker.pkg.dev/sbat-gcr-develop/sapig-docker-artifact
+latesttagversion := latest
 
 docker:
 ifndef tag
@@ -112,7 +113,7 @@ ifndef setlatest
 endif
 
 	@if [ "${setlatest}" = "true" ]; then \
-		docker build --file Dockerfile-sbat -t ${repo}/securebanking/${service}:${TAG} -t ${repo}/securebanking/${service}:latest . ; \
+		docker build --file Dockerfile-sbat -t ${repo}/securebanking/${service}:${TAG} -t ${repo}/securebanking/${service}:${latesttagversion} . ; \
 		docker push ${repo}/securebanking/${service} --all-tags; \
     else \
    		docker build --file Dockerfile-sbat -t ${repo}/securebanking/${service}:${TAG} . ; \
