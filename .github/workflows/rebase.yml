@@ -11,5 +11,5 @@ jobs:
     secrets: inherit
     with:
       componentName: conformance-dcr
-      sourceBranch: master
+      sourceBranch: sbat-master
       targetBranch: ob-v4
