@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - master
+      - sbat-master
 jobs:
   run_rebase-template:
     name: Rebase
