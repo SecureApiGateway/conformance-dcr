@@ -453,7 +453,7 @@ func DCR32RegistrationRequestInvalidSignature(
 				GenerateSignedClaims(authoriserBuilder).
 				PostClientRegister(cfg.OpenIDConfig.RegistrationEndpointAsString()).
 				AssertStatusCodeBadRequest().
-				AssertErrorMessage("invalid_client_metadata", "Registration Request signature is invalid").
+				AssertErrorMessage("invalid_client_metadata", "Registration Request JWT is invalid: Expected JWT to have a valid signature").
 				Build(),
 		).
 		// ToDo: This doesn't fail as expected as the jwt is not actually signed usign teh tokenEndpointSignMethod
@@ -515,7 +515,7 @@ func DCR32RegisterInvalidSoftwareStatementSigning(
 				).
 				PostClientRegister(cfg.OpenIDConfig.RegistrationEndpointAsString()).
 				AssertStatusCodeBadRequest().
-				AssertErrorMessage("invalid_software_statement", "Failed to validate SSA against jwks_uri").
+				AssertErrorMessage("invalid_software_statement", "Registration Request contains an invalid software_statement, Expected JWT to have a valid signature").
 				Build(),
 		).
 		TestCase(
@@ -526,7 +526,7 @@ func DCR32RegisterInvalidSoftwareStatementSigning(
 				).
 				PostClientRegister(cfg.OpenIDConfig.RegistrationEndpointAsString()).
 				AssertStatusCodeBadRequest().
-				AssertErrorMessage("invalid_software_statement", "Software Statement JWT error: Failed to reconstruct jwt from b64 encoded jwt string").
+				AssertErrorMessage("invalid_software_statement", "Registration Request contains an invalid software_statement, software_statement claim is not an encoded JWT").
 				Build(),
 		).
 		Build(), nil
